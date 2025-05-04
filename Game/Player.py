@@ -100,13 +100,14 @@ class Player:
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
                     self.y = platform.rect.y - self.size
+                    self.y_vel = 0
                     quest = platform.move(self)
                     if quest:
                         return quest
                 elif self.y_vel < 0:
                     self.jump = 0
+                    self.y_vel = 0
                     self.y = platform.rect.y+platform.rect.height
-                self.y_vel = 0
 
     # make gravity effect the player
     def addGravity(self, HEIGHT):
