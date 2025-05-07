@@ -16,7 +16,7 @@ FPS = 120
 font = pygame.font.Font(None, 100)
 
 #load music
-file_path = 'assets/Pixelated Horizons.mp3'
+file_path = 'Game/assets/Pixelated Horizons.mp3'
 pygame.mixer.music.load(file_path)
 pygame.mixer.music.play(-1)
 
@@ -24,9 +24,9 @@ pygame.mixer.music.play(-1)
 music_playing = True
 
 # load images
-floor = pygame.image.load("assets/floor.png")
-name_image = pygame.image.load("assets/NINJA/name.png")
-lose_image = pygame.image.load("assets/NINJA/lose.png")
+floor = pygame.image.load("Game/assets/floor.png")
+name_image = pygame.image.load("Game/assets/NINJA/name.png")
+lose_image = pygame.image.load("Game/assets/NINJA/lose.png")
 
 # variable to the save the current screen / Mode
 currentMode = "main-menu"
@@ -315,8 +315,8 @@ def MainMenu():
     clock = pygame.time.Clock()
 
     #  PICTURES PATH
-    path_music_on="assets/music logo/music_on"
-    path_music_off="assets/music logo/music_off"
+    path_music_on="Game/assets/music logo/music_on"
+    path_music_off="Game/assets/music logo/music_off"
 
     # buttons on the main menu screen
     playButton = Button((WIDTH/2-150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)

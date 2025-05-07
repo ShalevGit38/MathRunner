@@ -6,9 +6,9 @@ import math
 pygame.init()
 
 # load platforms and quest images
-platform_image = pygame.image.load("assets/platform.png")
+platform_image = pygame.image.load("Game/assets/platform.png")
 platform_image = pygame.transform.scale(platform_image, (200, 40))
-quest_warning_image = pygame.image.load("assets/Ninja/!.png")
+quest_warning_image = pygame.image.load("Game/assets/Ninja/!.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
 
 font = pygame.font.Font(None, 100)
