@@ -128,7 +128,7 @@ class Quest:
             self.choose = 0
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.choose = 1
-        if keys[pygame.K_RETURN]:
+        if keys[pygame.K_SPACE] and self.questMovement > 50:
             if self.choose != self.correctIndex:
                 removeHeart(player)
             player.play = True

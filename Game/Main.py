@@ -8,9 +8,9 @@ from Platform import Platform
 pygame.init()
 
 # initialize the window
-WIN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+WIN = pygame.display.set_mode((0, 0))
 WIDTH, HEIGHT = WIN.get_width(), WIN.get_height()
-FPS = 120
+FPS = 144
 
 # set the basic font
 font = pygame.font.Font(None, 100)
@@ -25,6 +25,7 @@ music_playing = True
 
 # load images
 floor = pygame.image.load("Game/assets/floor.png")
+bad_floor = pygame.image.load("Game/assets/bad_floor.png")
 name_image = pygame.image.load("Game/assets/NINJA/name.png")
 lose_image = pygame.image.load("Game/assets/NINJA/lose.png")
 
@@ -62,7 +63,7 @@ class Camera:
 
 # update everything that is player functions
 def updatePlayer(player, platforms, cam, quest):
-    quest = player.collidePlatform(platforms)
+    quest = player.collidePlatform(platforms, WIDTH, HEIGHT)
     player.addGravity(HEIGHT)
     player.moveAnimation()
     if player.y < -200:
@@ -84,20 +85,27 @@ def handle_movement(player):
 
 # draw the background and loop the floor
 def drawBG(cam, floors):
-    x, y = cam.get(0, HEIGHT / 2 + 150)
+    # Background color behind floor
+    _, y = cam.get(0, HEIGHT / 2 + 150)
     pygame.draw.rect(WIN, (217, 211, 144), (0, y, WIDTH, 600))
-    x, y = cam.get(floors[0], HEIGHT/2+150)
-    WIN.blit(floor, (x, y))
-    x, y = cam.get(floors[1], HEIGHT/2+150)
-    WIN.blit(floor, (x, y))
 
-    if cam.x-WIDTH/2 > floors[0]+floor.get_width():
+    # Draw the visible floor tiles
+    for i in range(2):
+        x, y = cam.get(floors[i], HEIGHT / 2 + 150)
+        img = bad_floor if floors[i] > WIDTH else floor
+        WIN.blit(img, (x, y))
+
+    floor_width = floor.get_width()
+
+    # Scroll logic - if camera moves right
+    if cam.x - WIDTH/2+100 > floors[0] + floor_width:
         floors[0] = floors[1]
-        floors[1] += floor.get_width()
+        floors[1] = floors[0] + floor_width
 
-    if cam.x+WIDTH/2 < floors[1]:
+    # Scroll logic - if camera moves left
+    elif cam.x + WIDTH/2+100 < floors[1]:
         floors[1] = floors[0]
-        floors[0] -= floor.get_width()
+        floors[0] = floors[1] - floor_width
 
 
 # draw everything in the gameloop that need to be drawn
@@ -131,7 +139,7 @@ def gameloop():
     # sets all the platforms
     platforms = [Platform((WIDTH-200, 500, 200, 40))]
     for i in range(30):
-        addPlatform(platforms, i*700)
+        addPlatform(platforms, i*900)
 
     # set the camera
     cam = Camera()
