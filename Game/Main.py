@@ -43,30 +43,31 @@ def changeMode():
 
 # camera follow the player and set the position for everything else using the get method
 class Camera:
-    SPEED = 50
+    SPEED = 75
 
     def __init__(self):
         self.x = 0
         self.y = 0
-        self.follow_y = False
+        self.follow_y = True
 
     # update the position of the camera to follow the x, y
     def update(self, x, y):
         self.x += (x - self.x) / self.SPEED
-        self.y += (y - self.y) / (self.SPEED/10)
+        if self.follow_y:
+            self.y += (y - self.y) / (self.SPEED/10)
 
     # returns the position odf the object relative to the camera position
     def get(self, x, y):
         xPos = WIDTH/2 + (x - self.x) - 100
-        yPos = HEIGHT/2 + (y - self.y) + 50
+        yPos = HEIGHT/2 + (y - self.y)
         return xPos, yPos
 
 # update everything that is player functions
 def updatePlayer(player, platforms, cam, quest):
-    quest = player.collidePlatform(platforms, WIDTH, HEIGHT)
+    quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam)
     player.addGravity(HEIGHT)
     player.moveAnimation()
-    if player.y < -200:
+    if player.y > 50:
         cam.follow_y = True
     else:
         cam.follow_y = False
@@ -139,7 +140,7 @@ def gameloop():
     # sets all the platforms
     platforms = [Platform((WIDTH-200, 500, 200, 40))]
     for i in range(30):
-        addPlatform(platforms, i*900)
+        addPlatform(platforms, i*800)
 
     # set the camera
     cam = Camera()
@@ -238,6 +239,9 @@ def LoseScreen():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return
+                if event.key == pygame.K_RETURN:
+                    currentMode = "main-menu"
+                    run = False
 
         # draw buttons
         mainMenuButton.draw()
@@ -322,7 +326,7 @@ def MainMenu():
     run = True
     clock = pygame.time.Clock()
 
-    #  PICTURES PATH
+    #  pictures for the sound icon on/off
     path_music_on="Game/assets/music logo/music_on"
     path_music_off="Game/assets/music logo/music_off"
 
@@ -352,10 +356,13 @@ def MainMenu():
             if event.type == pygame.QUIT:
                 run = False
                 break
-            # press escape to close the game
             if event.type == pygame.KEYDOWN:
+                # press escape to close the game
                 if event.key == pygame.K_ESCAPE:
                     return
+                if event.key == pygame.K_RETURN:
+                    currentMode = "gameloop"
+                    run = False
 
         # draw all the buttons
         playButton.draw()

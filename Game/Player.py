@@ -89,14 +89,13 @@ class Player:
             heart.draw(0 + x*120, 0, WIN)
 
     # check where and if the player is colliding with the platforms
-    def collidePlatform(self, platforms, WIDTH, HEIGHT):
+    def collidePlatform(self, platforms, WIDTH, HEIGHT, cam):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
         if self.y > HEIGHT-500 and self.x > WIDTH+500:
             for i in range(3):
                 removeHeart(self)
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
-                self.jump = 1
                 if self.x >= platform.rect.x+platform.rect.width-5:
                     self.x = platform.rect.x+platform.rect.width
                 elif self.x+self.size <= platform.rect.x+5:
@@ -111,6 +110,7 @@ class Player:
                     self.y_vel = 0
                     self.jump = 0
                     self.y = platform.rect.y+platform.rect.height
+                self.jump = 1
 
     # make gravity effect the player
     def addGravity(self, HEIGHT):
