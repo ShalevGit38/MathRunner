@@ -3,29 +3,29 @@ import time
 import math
 
 # load all the heart images
-heart1 = pygame.image.load("Game/assets/heart3.png")
+heart1 = pygame.image.load("assets/heart3.png")
 heart1 = pygame.transform.scale(heart1, (heart1.get_width()*1.5, heart1.get_height()*1.5))
-heart2 = pygame.image.load("Game/assets/heart2.png")
+heart2 = pygame.image.load("assets/heart2.png")
 heart2 = pygame.transform.scale(heart2, (heart2.get_width()*1.5, heart2.get_height()*1.5))
-heart3 = pygame.image.load("Game/assets/heart.png")
+heart3 = pygame.image.load("assets/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
 # load animations
 runAnimation = []
 for i in range(12):
-    image = pygame.image.load(f"Game/assets/Ninja/NinjaRun/tile{i}.png")
+    image = pygame.image.load(f"assets/Ninja/NinjaRun/tile{i}.png")
     runAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
 idleAnimation = []
 for i in range(11):
-    image = pygame.image.load(f"Game/assets/Ninja/NinjaIdle/tile{i}.png")
+    image = pygame.image.load(f"assets/Ninja/NinjaIdle/tile{i}.png")
     idleAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
-image = pygame.image.load(f"Game/assets/Ninja/fall.png")
+image = pygame.image.load(f"assets/Ninja/fall.png")
 fallAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
-image = pygame.image.load(f"Game/assets/Ninja/jump.png")
+image = pygame.image.load(f"assets/Ninja/jump.png")
 jumpAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
 # heart class
@@ -97,10 +97,13 @@ class Player:
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
                 if self.x >= platform.rect.x+platform.rect.width-5:
+                    self.jump = 1
                     self.x = platform.rect.x+platform.rect.width
                 elif self.x+self.size <= platform.rect.x+5:
+                    self.jump = 1
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
+                    self.jump = 1
                     self.y_vel = 0
                     self.y = platform.rect.y - self.size
                     quest = platform.move(self)
@@ -108,9 +111,7 @@ class Player:
                         return quest
                 elif self.y_vel < 0:
                     self.y_vel = 0
-                    self.jump = 0
                     self.y = platform.rect.y+platform.rect.height
-                self.jump = 1
 
     # make gravity effect the player
     def addGravity(self, HEIGHT):
