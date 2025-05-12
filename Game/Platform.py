@@ -2,9 +2,6 @@ import pygame
 import random
 from Player import removeHeart
 import math
-import os
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 pygame.init()
 
