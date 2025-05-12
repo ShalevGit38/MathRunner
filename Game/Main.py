@@ -3,10 +3,6 @@ import random
 import pygame
 from Player import Player
 from Platform import Platform
-import os
-
-os.system("cd C:\Users\benar\OneDrive\Desktop\Code\Tech\PYTHON\Game")
-os.system("python main.py")
 
 # initialize pygame
 pygame.init()
