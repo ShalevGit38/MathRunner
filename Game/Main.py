@@ -49,12 +49,17 @@ class Camera:
         self.x = 0
         self.y = 0
         self.follow_y = True
+        self.camShakeTime = 0
 
     # update the position of the camera to follow the x, y
     def update(self, x, y):
         self.x += (x - self.x) / self.SPEED
         if self.follow_y:
             self.y += (y - self.y) / (self.SPEED/10)
+        if self.camShakeTime > 0:
+            self.x += random.randint(-5, 5)
+            self.y += random.randint(-10, 10)
+            self.camShakeTime -= 1
 
     # returns the position odf the object relative to the camera position
     def get(self, x, y):
@@ -65,8 +70,10 @@ class Camera:
 # update everything that is player functions
 def updatePlayer(player, platforms, cam, quest):
     quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam)
-    player.addGravity(HEIGHT)
+    player.addGravity(HEIGHT, cam)
     player.moveAnimation()
+    if player.play:
+        player.move()
     if player.y > 50:
         cam.follow_y = True
     else:
@@ -80,8 +87,10 @@ def handle_movement(player):
 
     if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         player.move_right()
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+    elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
         player.move_Left(WIDTH)
+    else:
+        player.currentSpeed = 0
 
 
 # draw the background and loop the floor
@@ -125,7 +134,7 @@ def getDistance(x, y, x1, y1):
 
 # adds another platform to the x position at random y
 def addPlatform(platforms, x):
-    platforms.append(Platform((x+WIDTH+300, random.randint(300, 600), 200, 40)))
+    platforms.append(Platform((x+WIDTH+random.randint(150, 300), random.randint(300, 600), 200, 40)))
 
 # main gameloop
 def gameloop():
@@ -169,8 +178,9 @@ def gameloop():
                 # jump when space is pressed
                 if event.key == pygame.K_SPACE and player.jump > 0 and player.play:
                     player.y -= 1
-                    player.y_vel = -7
-                    player.jump -= 1
+                    player.y_vel = -8
+                    player.jump = 0
+                    player.isInAir = True
                 # exit the game where the escape is pressed
                 if event.key == pygame.K_ESCAPE:
                     return

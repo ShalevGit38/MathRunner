@@ -60,6 +60,9 @@ class Player:
         self.currentAnimation = 0
         self.direction = 0
         self.spawnPoint = (self.x, self.y)
+        self.currentSpeed = 0
+        self.isInAir = False
+
 
     # draw the player and animations
     def draw(self, cam, WIN):
@@ -107,6 +110,9 @@ class Player:
                     self.jump = 1
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
+                    if self.isInAir:
+                        cam.camShakeTime = 25
+                    self.isInAir = False
                     self.jump = 1
                     # set the player spawn point to the platfrom position when collide with it
                     self.spawnPoint = (platform.rect.x+platform.rect.width/2-self.size/2, platform.rect.y-100)
@@ -118,31 +124,42 @@ class Player:
                 elif self.y_vel < 0:
                     self.y_vel = 0
                     self.y = platform.rect.y+platform.rect.height
+                return
 
     # make gravity effect the player
-    def addGravity(self, HEIGHT):
+    def addGravity(self, HEIGHT, cam):
         self.y_vel += self.GRAVITY
+        if self.y_vel > 0:
+            self.y_vel += self.GRAVITY
 
         if self.y > HEIGHT/2-self.size+150:
             self.y_vel = 0
             self.y = HEIGHT/2-self.size+150
             self.jump = 1
+            if self.isInAir:
+                cam.camShakeTime = 25
+            self.isInAir = False
 
         self.y += self.y_vel
 
     # move the player left
     def move_Left(self, WIDTH):
         if self.x > -WIDTH/2 and self.play:
-            self.x -= self.SPEED
+            self.currentSpeed = -self.SPEED
         self.currentAnimation = 1
         self.direction = 1
 
     # move the player right
     def move_right(self):
         if self.play:
-            self.x += self.SPEED
+            self.currentSpeed = self.SPEED
         self.currentAnimation = 0
         self.direction = 0
+    
+    def move(self):
+        self.x += self.currentSpeed
+        if abs(self.y_vel) > self.GRAVITY*2:
+            self.isInAir = True
 
     # skip by the animations to make the run and idle smooth
     def moveAnimation(self):
