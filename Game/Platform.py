@@ -2,6 +2,7 @@ import pygame
 import random
 from Player import removeHeart
 import math
+from createProblem import getEquation
 
 pygame.init()
 
@@ -74,8 +75,9 @@ class Platform:
             self.rect.y += (self.toTop - self.rect.y) / 50
             if abs(self.rect.y-self.toTop) < 50:
                 self.moved = True
-                quest_answer = random.choice(quests)
-                quest = Quest(quest_answer[0], quest_answer[1], self.rect.x+self.rect.width/2, self.rect.y-200)
+                quest_equation = getEquation()
+                equationFixed = quest_equation.replace("÷", "/").replace("×", "*")
+                quest = Quest(quest_equation, eval(equationFixed), self.rect.x+self.rect.width/2, self.rect.y-200)
                 return quest
 
 # the quest to draw the question and answers

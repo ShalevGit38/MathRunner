@@ -56,7 +56,7 @@ class Camera:
         self.x += (x - self.x) / self.SPEED
         if self.follow_y:
             self.y += (y - self.y) / (self.SPEED/10)
-        if self.camShakeTime > 0:
+        if self.camShakeTime > 0 and False:
             self.x += random.randint(-5, 5)
             self.y += random.randint(-10, 10)
             self.camShakeTime -= 1
