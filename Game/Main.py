@@ -4,6 +4,8 @@ import pygame
 from Player import Player
 from Platform import Platform
 import createProblem as eq
+import threading
+import time
 
 # initialize pygame
 pygame.init()
@@ -12,6 +14,13 @@ pygame.init()
 WIN = pygame.display.set_mode((0, 0))
 WIDTH, HEIGHT = WIN.get_width(), WIN.get_height()
 FPS = 144
+
+# load loading images
+loadingImages = []
+for i in range(8):
+    image = pygame.image.load(f"assets/loading/tile{i}.png")
+    loadingImages.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
+
 
 # set the basic font
 font = pygame.font.Font(None, 100)
@@ -35,8 +44,10 @@ currentMode = "main-menu"
 
 # called everytime a screen is changed to check what is the next screen
 def changeMode():
+    if currentMode == "loadingScreen":
+        thread = threading.Thread(target=eq.createList, args=(100,))
+        loadingScreen(thread)
     if currentMode == "gameloop":
-        eq.createList(100)
         gameloop()
     elif currentMode == "main-menu":
         MainMenu()
@@ -138,6 +149,52 @@ def getDistance(x, y, x1, y1):
 def addPlatform(platforms, x):
     platforms.append(Platform((x+WIDTH+random.randint(150, 300), random.randint(300, 600), 200, 40)))
 
+class loadingAnimation():
+    def __init__(self, x, y):
+        self.frame = 0
+        self.x = x
+        self.y = y
+    
+    def update(self):
+        self.frame += 1
+    
+    def draw(self):
+        img = loadingImages[int(self.frame % len(loadingImages))]
+        WIN.blit(img, (self.x-img.get_width()/2, self.y-img.get_height()/2))
+
+def loadingScreen(thread):
+    global currentMode
+
+    loading = loadingAnimation(WIDTH/2, HEIGHT/2)
+
+    exitButton = Button((10, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
+
+    thread.start()
+
+    while thread.is_alive():
+        WIN.fill((0, 0, 0))
+        
+        for event in pygame.event.get():
+            # quit event
+            if event.type == pygame.QUIT:
+                return
+            if event.type == pygame.KEYDOWN:
+                # press escape to close the game
+                if event.key == pygame.K_ESCAPE:
+                    return
+        
+        exitButton.draw()
+        if exitButton.onClick():
+            return
+
+        loading.update()
+        loading.draw()
+
+        pygame.display.update()
+        time.sleep(0.2)
+    currentMode = "gameloop"
+    changeMode()
+
 # main gameloop
 def gameloop():
     global currentMode
@@ -174,7 +231,7 @@ def gameloop():
             # exit the screen when red x is pressed
             if event.type == pygame.QUIT:
                 run = False
-                break
+                return
             # keys events
             if event.type == pygame.KEYDOWN:
                 # jump when space is pressed
@@ -185,6 +242,8 @@ def gameloop():
                     player.isInAir = True
                 # exit the game where the escape is pressed
                 if event.key == pygame.K_ESCAPE:
+                    run = False
+                    currentMode = "main-menu"
                     return
 
         # draws everything to the screen
@@ -208,7 +267,8 @@ def gameloop():
         # draw and make the exit button work
         exitButton.draw()
         if exitButton.onClick():
-            return
+            currentMode = "main-menu"
+            run = False
 
         # checks if the player has 0 life, and lose
         for x, heart in enumerate(player.life):
@@ -334,7 +394,7 @@ class Button:
 
 # the main menu screen
 def MainMenu():
-    global currentMode , music_playing
+    global currentMode, music_playing
     run = True
     clock = pygame.time.Clock()
 
@@ -373,9 +433,9 @@ def MainMenu():
                 if event.key == pygame.K_ESCAPE:
                     return
                 if event.key == pygame.K_RETURN:
-                    currentMode = "gameloop"
-                    playButton.currentColor = playButton.toColor
+                    currentMode = "loadingScreen"
                     run = False
+                    break
 
         # draw all the buttons
         playButton.draw()
@@ -385,7 +445,8 @@ def MainMenu():
 
         # check which button got clicked and their feature
         if playButton.onClick():
-            currentMode = "gameloop"
+            currentMode = "loadingScreen"
+            run = False
             break
         if exitButton.onClick():
             return

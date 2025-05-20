@@ -37,7 +37,8 @@ class Platform:
             self.rect.y += (self.toTop - self.rect.y) / 50
             if abs(self.rect.y-self.toTop) < 50:
                 self.moved = True
-                quest_equation = random.choice(eq.equations)
+                quest_equation = eq.equations[0]
+                eq.equations.pop(0)
                 equationFixed = quest_equation.replace("÷", "/").replace("×", "*")
                 quest = Quest(quest_equation, eval(equationFixed), self.rect.x+self.rect.width/2, self.rect.y-200)
                 return quest
