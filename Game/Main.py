@@ -6,6 +6,7 @@ from Platform import Platform
 import createProblem as eq
 import threading
 import time
+import math
 
 # initialize pygame
 pygame.init()
@@ -14,12 +15,6 @@ pygame.init()
 WIN = pygame.display.set_mode((0, 0))
 WIDTH, HEIGHT = WIN.get_width(), WIN.get_height()
 FPS = 144
-
-# load loading images
-loadingImages = []
-for i in range(8):
-    image = pygame.image.load(f"assets/loading/tile{i}.png")
-    loadingImages.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
 
 # set the basic font
@@ -149,23 +144,46 @@ def getDistance(x, y, x1, y1):
 def addPlatform(platforms, x):
     platforms.append(Platform((x+WIDTH+random.randint(150, 300), random.randint(300, 600), 200, 40)))
 
-class loadingAnimation():
-    def __init__(self, x, y):
-        self.frame = 0
-        self.x = x
-        self.y = y
-    
-    def update(self):
-        self.frame += 1
-    
-    def draw(self):
-        img = loadingImages[int(self.frame % len(loadingImages))]
-        WIN.blit(img, (self.x-img.get_width()/2, self.y-img.get_height()/2))
+class Circle:
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+		self.color = 255
+		self.size = 20
+	
+	def update(self):
+		self.color = max(self.color-4, 0)
+		self.size = max(self.size-0, 0)
+	
+	def draw(self):
+		c = int(self.color)
+		pygame.draw.circle(WIN, (c, c, c), (self.x, self.y), self.size)
+
+
+class LoadingAnimation:
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+		self.angle = 0
+		self.circles = []
+	
+	def update(self):
+		x = self.x + math.cos(self.angle) * 100
+		y = self.y + math.sin(self.angle) * 100
+		self.circles.append(Circle(x, y))
+		self.angle += 0.02
+	
+	def draw(self):
+		for circle in self.circles:
+			circle.draw()
+			circle.update()
+			if circle.color == 0:
+				self.circles.remove(circle)
 
 def loadingScreen(thread):
     global currentMode
 
-    loading = loadingAnimation(WIDTH/2, HEIGHT/2)
+    loading = LoadingAnimation(WIDTH/2, HEIGHT/2)
 
     exitButton = Button((10, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
 
@@ -191,7 +209,6 @@ def loadingScreen(thread):
         loading.draw()
 
         pygame.display.update()
-        time.sleep(0.2)
     currentMode = "gameloop"
     changeMode()
 
