@@ -47,8 +47,8 @@ def changeMode():
     if currentMode == "gameloop":
         gameloop()
     elif currentMode == "loadingScreen":
-            thread = threading.Thread(target=eq.createList, args=(100,))
-            loadingScreen(thread)
+        thread = threading.Thread(target=eq.createList, args=(100,))
+        loadingScreen(thread)
     elif currentMode == "main-menu":
         MainMenu()
     elif currentMode == "lose-screen":
