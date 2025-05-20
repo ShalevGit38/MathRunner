@@ -39,11 +39,11 @@ currentMode = "main-menu"
 
 # called everytime a screen is changed to check what is the next screen
 def changeMode():
-    if currentMode == "loadingScreen":
-        thread = threading.Thread(target=eq.createList, args=(100,))
-        loadingScreen(thread)
     if currentMode == "gameloop":
         gameloop()
+    elif currentMode == "loadingScreen":
+        thread = threading.Thread(target=eq.createList, args=(100,))
+        loadingScreen(thread)
     elif currentMode == "main-menu":
         MainMenu()
     elif currentMode == "lose-screen":
