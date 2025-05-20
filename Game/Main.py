@@ -3,6 +3,7 @@ import random
 import pygame
 from Player import Player
 from Platform import Platform
+import createProblem as eq
 
 # initialize pygame
 pygame.init()
@@ -35,6 +36,7 @@ currentMode = "main-menu"
 # called everytime a screen is changed to check what is the next screen
 def changeMode():
     if currentMode == "gameloop":
+        eq.createList(100)
         gameloop()
     elif currentMode == "main-menu":
         MainMenu()
@@ -372,6 +374,7 @@ def MainMenu():
                     return
                 if event.key == pygame.K_RETURN:
                     currentMode = "gameloop"
+                    playButton.currentColor = playButton.toColor
                     run = False
 
         # draw all the buttons
@@ -394,7 +397,6 @@ def MainMenu():
                 pygame.mixer.music.play(-1)
             else:
                 pygame.mixer.music.stop()
-
 
 
         # show the game name image

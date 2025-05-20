@@ -2,7 +2,7 @@ import pygame
 import random
 from Player import removeHeart
 import math
-from createProblem import getEquation
+import createProblem as eq
 
 pygame.init()
 
@@ -13,44 +13,6 @@ quest_warning_image = pygame.image.load("assets/Ninja/!.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
 
 font = pygame.font.Font(None, 100)
-
-# all the quests
-quests = [
-    ("2 + 2", 4),
-    ("5 + 2", 7),
-    ("2 x 5", 10),
-    ("3 + 3", 6),
-    ("8 - 4", 4),
-    ("6 x 3", 18),
-    ("9 ÷ 3", 3),
-    ("10 + 7", 17),
-    ("15 - 9", 6),
-    ("4 x 4", 16),
-    ("12 ÷ 4", 3),
-    ("7 + 5", 12),
-    ("6 + 2", 8),
-    ("3 x 3", 9),
-    ("20 - 8", 12),
-    ("29 + 56", 85),
-    ("123 x 9", 1107),
-    ("81 ÷ 9", 9),
-    ("44 + 76", 120),
-    ("56 x 14", 784),
-    ("78 ÷ 6", 13),
-    ("15 x 17", 255),
-    ("102 + 189", 291),
-    ("88 ÷ 4", 22),
-    ("56 + 78", 134),
-    ("34 x 13", 442),
-    ("567 ÷ 3", 189),
-    ("99 x 11", 1089),
-    ("143 - 58", 85),
-    ("256 + 128", 384),
-    ("18 x 24", 432),
-    ("420 ÷ 5", 84),
-    ("645 + 352", 997),
-    ("672 ÷ 8", 84),
-]
 
 # object of the platform
 class Platform:
@@ -75,7 +37,7 @@ class Platform:
             self.rect.y += (self.toTop - self.rect.y) / 50
             if abs(self.rect.y-self.toTop) < 50:
                 self.moved = True
-                quest_equation = getEquation()
+                quest_equation = random.choice(eq.equations)
                 equationFixed = quest_equation.replace("÷", "/").replace("×", "*")
                 quest = Quest(quest_equation, eval(equationFixed), self.rect.x+self.rect.width/2, self.rect.y-200)
                 return quest
@@ -84,13 +46,14 @@ class Platform:
 class Quest:
     def __init__(self, quest, answer, x, y):
         self.quest = quest
-        self.answer = answer
+        self.answer = int(answer) if answer == int(answer) else answer
         self.wrongAnswer = answer + (random.choice([-1, 1])*random.randint(1, 10))
         self.x = x
         self.y = y
         self.questMovement = 0
         self.correctIndex = random.randint(0, 1)
         self.choose = 0
+        self.chooseX = 0
 
     # draw the answers and the quest
     def draw(self, cam, WIN):
@@ -101,7 +64,8 @@ class Quest:
 
     # draw the choose one with a line
     def drawChoose(self, x, y, WIN):
-        pygame.draw.line(WIN, (255, 255, 0), ((x-200)+(400*self.choose)-100, y+50), ((x-200)+(400*self.choose)+100, y+50), 10)
+        self.chooseX -= (self.chooseX - 400*self.choose) / 10
+        pygame.draw.line(WIN, (255, 255, 0), ((x-200)+(self.chooseX)-100, y+50), ((x-200)+(self.chooseX)+100, y+50), 10)
 
     # draw the answer
     def drawQuest(self, x, y, WIN):
