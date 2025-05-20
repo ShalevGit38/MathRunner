@@ -248,6 +248,7 @@ def gameloop():
             # exit the screen when red x is pressed
             if event.type == pygame.QUIT:
                 run = False
+                exit()
                 return
             # keys events
             if event.type == pygame.KEYDOWN:
@@ -261,7 +262,6 @@ def gameloop():
                 if event.key == pygame.K_ESCAPE:
                     run = False
                     currentMode = "main-menu"
-                    return
 
         # draws everything to the screen
         drawEverything(player, platforms, cam, floors)
