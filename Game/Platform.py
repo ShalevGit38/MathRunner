@@ -47,7 +47,7 @@ class Quest:
     def __init__(self, quest, answer, x, y):
         self.quest = quest
         self.answer = int(answer) if answer == int(answer) else answer
-        self.wrongAnswer = answer + (random.choice([-1, 1])*random.randint(1, 10))
+        self.wrongAnswer = answer + (random.choice([-1, 1])*random.randint(2, 20))
         self.x = x
         self.y = y
         self.questMovement = 0

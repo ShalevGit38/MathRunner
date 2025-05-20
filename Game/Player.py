@@ -11,21 +11,23 @@ heart3 = pygame.image.load("assets/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
+playerSkin = "Man"
+
 # load animations
 runAnimation = []
 for i in range(12):
-    image = pygame.image.load(f"assets/Ninja/NinjaRun/tile{i}.png")
+    image = pygame.image.load(f"assets/{playerSkin}/Run/tile{i}.png")
     runAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
 idleAnimation = []
 for i in range(11):
-    image = pygame.image.load(f"assets/Ninja/NinjaIdle/tile{i}.png")
+    image = pygame.image.load(f"assets/{playerSkin}/Idle/tile{i}.png")
     idleAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
-image = pygame.image.load(f"assets/Ninja/fall.png")
+image = pygame.image.load(f"assets/{playerSkin}/fall.png")
 fallAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
-image = pygame.image.load(f"assets/Ninja/jump.png")
+image = pygame.image.load(f"assets/{playerSkin}/jump.png")
 jumpAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
 # heart class
