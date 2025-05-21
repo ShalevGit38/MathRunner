@@ -168,8 +168,8 @@ class LoadingAnimation:
 		self.circles = []
 	
 	def update(self):
-		x = self.x + math.cos(self.angle) * 100
-		y = self.y + math.sin(self.angle) * 100
+		x = self.x + math.cos(self.angle) * 75
+		y = self.y + math.sin(self.angle) * 75
 		self.circles.append(Circle(x, y))
 		self.angle += 0.02
 	
@@ -183,7 +183,7 @@ class LoadingAnimation:
 def loadingScreen(thread):
     global currentMode
 
-    loading = LoadingAnimation(WIDTH/2, HEIGHT/2)
+    loading = LoadingAnimation(WIDTH-110, HEIGHT-110)
 
     exitButton = Button((10, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
 
