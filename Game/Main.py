@@ -32,7 +32,24 @@ music_playing = True
 floor = pygame.image.load("assets/floor.png")
 bad_floor = pygame.image.load("assets/bad_floor.png")
 name_image = pygame.image.load("assets/NINJA/name.png")
+name_image = pygame.transform.scale(name_image, (name_image.get_width(), name_image.get_height()))
 lose_image = pygame.image.load("assets/NINJA/lose.png")
+
+# set the number on the main menu screen
+numbersImages = []
+numbers = []
+for i in range(1, 2):
+    img = pygame.image.load(f"assets/numbers/number{i}.png")
+    img = pygame.transform.scale(img, (img.get_width()/12, img.get_height()/12))
+    numbersImages.append(img)
+
+for i in range(5):
+    number = numbersImages[0]
+    x, y = WIDTH/2, HEIGHT/2
+    while WIDTH/2-name_image.get_width()/2 < x < WIDTH/2+name_image.get_width()/2 and HEIGHT/2-name_image.get_height()/2 < y < HEIGHT/2+name_image.get_height()/2:
+        x = random.randint(100, WIDTH-100)
+        y = random.randint(100, HEIGHT-100)
+    numbers.append((number, x, y))
 
 # variable to the save the current screen / Mode
 currentMode = "main-menu"
@@ -478,7 +495,11 @@ def MainMenu():
 
 
         # show the game name image
-        WIN.blit(name_image, (WIDTH/4, -150))
+        WIN.blit(name_image, (WIDTH/2-name_image.get_width()/2, 0))
+
+        # show the numbers floating
+        for number, x, y in numbers:
+            WIN.blit(number, (x, y))
 
         # draw the help menu
         helpWin.draw()

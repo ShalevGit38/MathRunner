@@ -11,7 +11,8 @@ heart3 = pygame.image.load("assets/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
-playerSkin = "Man"
+skins = ["Man", "Ninja"]
+playerSkin = skins[0]
 
 # load animations
 runAnimation = []
@@ -55,7 +56,7 @@ class Player:
         self.color = (255, 0, 0)
         self.y_vel = 0
         self.jump = 1
-        self.life = [Heart(), Heart(), Heart()]
+        self.life = [Heart(), Heart(), Heart(), Heart(), Heart()]
         self.play = True
         self.currentFrame = 0
         self.lastTime = time.time()
@@ -95,14 +96,16 @@ class Player:
             heart.draw(0 + x*120, 0, WIN)
     
     # spawn the player to his last spawn point
-    def spawn(self):
+    def spawn(self, cam):
+        removeHeart(self)
         self.x, self.y = self.spawnPoint
+        cam.x, cam.y = self.spawnPoint
 
     # check where and if the player is colliding with the platforms
     def collidePlatform(self, platforms, WIDTH, HEIGHT, cam):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
         if self.y > HEIGHT-500 and self.x > WIDTH+500:
-            self.spawn()
+            self.spawn(cam)
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
                 if self.x >= platform.rect.x+platform.rect.width-5:
@@ -117,7 +120,9 @@ class Player:
                     self.isInAir = False
                     self.jump = 1
                     # set the player spawn point to the platfrom position when collide with it
-                    self.spawnPoint = (platform.rect.x+platform.rect.width/2-self.size/2, platform.rect.y-100)
+                    # if its a question platform
+                    if platform.question:
+                        self.spawnPoint = (platform.rect.x+platform.rect.width/2-self.size/2, platform.rect.y-100)
                     self.y_vel = 0
                     self.y = platform.rect.y - self.size
                     quest = platform.move(self)

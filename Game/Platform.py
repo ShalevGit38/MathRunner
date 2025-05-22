@@ -18,7 +18,7 @@ font = pygame.font.Font(None, 100)
 class Platform:
     def __init__(self, rect):
         self.rect = pygame.Rect(rect)
-        self.moving = (random.randint(1, 5) <= 2)
+        self.question = (random.randint(1, 5) <= 2)
         self.toTop = self.rect.y - 400
         self.moved = False
 
@@ -27,12 +27,12 @@ class Platform:
         x, y = cam.get(self.rect.x, self.rect.y)
         #pygame.draw.rect(WIN, (0, 0, 0), (x, y, self.rect.width, self.rect.height))
         WIN.blit(platform_image, (x, y))
-        if self.moving and not self.moved:
+        if self.question and not self.moved:
             WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))
 
     # move the platform if it's a moving platform
     def move(self, player):
-        if self.moving and not self.moved:
+        if self.question and not self.moved:
             player.play = False
             self.rect.y += (self.toTop - self.rect.y) / 50
             if abs(self.rect.y-self.toTop) < 50:
