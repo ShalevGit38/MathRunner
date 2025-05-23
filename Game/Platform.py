@@ -7,12 +7,16 @@ import createProblem as eq
 pygame.init()
 
 # load platforms and quest images
-platform_image = pygame.image.load("assets/platform.png")
+platform_image = pygame.image.load("assets/platforms/platform.png")
 platform_image = pygame.transform.scale(platform_image, (200, 40))
-quest_warning_image = pygame.image.load("assets/Ninja/!.png")
+quest_warning_image = pygame.image.load("assets/platforms/questionSymbol.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
 
 font = pygame.font.Font(None, 100)
+
+# adds another platform to the x position at random y
+def addPlatform(platforms, x, WIDTH):
+    platforms.append(Platform((x+WIDTH+random.randint(150, 300), random.randint(300, 600), 200, 40)))
 
 # object of the platform
 class Platform:
@@ -23,8 +27,8 @@ class Platform:
         self.moved = False
 
     # draw the platform using the camera
-    def draw(self, cam, WIN):
-        x, y = cam.get(self.rect.x, self.rect.y)
+    def draw(self, cam, WIN, WIDTH, HEIGHT):
+        x, y = cam.get(self.rect.x, self.rect.y, WIDTH, HEIGHT)
         #pygame.draw.rect(WIN, (0, 0, 0), (x, y, self.rect.width, self.rect.height))
         WIN.blit(platform_image, (x, y))
         if self.question and not self.moved:
@@ -57,8 +61,8 @@ class Quest:
         self.chooseX = 0
 
     # draw the answers and the quest
-    def draw(self, cam, WIN):
-        x, y = cam.get(self.x, self.y + math.sin(self.questMovement / 20) * 20)
+    def draw(self, cam, WIN, WIDTH, HEIGHT):
+        x, y = cam.get(self.x, self.y + math.sin(self.questMovement / 20) * 20, WIDTH, HEIGHT)
         self.drawQuest(x, y, WIN)
         self.drawAnswer(x, y, WIN)
         self.drawChoose(x, y, WIN)

@@ -3,11 +3,11 @@ import time
 import math
 
 # load all the heart images
-heart1 = pygame.image.load("assets/heart3.png")
+heart1 = pygame.image.load("assets/hearts/heart3.png")
 heart1 = pygame.transform.scale(heart1, (heart1.get_width()*1.5, heart1.get_height()*1.5))
-heart2 = pygame.image.load("assets/heart2.png")
+heart2 = pygame.image.load("assets/hearts/heart2.png")
 heart2 = pygame.transform.scale(heart2, (heart2.get_width()*1.5, heart2.get_height()*1.5))
-heart3 = pygame.image.load("assets/heart.png")
+heart3 = pygame.image.load("assets/hearts/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
@@ -17,19 +17,40 @@ playerSkin = skins[0]
 # load animations
 runAnimation = []
 for i in range(12):
-    image = pygame.image.load(f"assets/{playerSkin}/Run/tile{i}.png")
+    image = pygame.image.load(f"assets/skins/{playerSkin}/Run/tile{i}.png")
     runAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
 idleAnimation = []
 for i in range(11):
-    image = pygame.image.load(f"assets/{playerSkin}/Idle/tile{i}.png")
+    image = pygame.image.load(f"assets/skins/{playerSkin}/Idle/tile{i}.png")
     idleAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
-image = pygame.image.load(f"assets/{playerSkin}/fall.png")
+image = pygame.image.load(f"assets/skins/{playerSkin}/fall.png")
 fallAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
-image = pygame.image.load(f"assets/{playerSkin}/jump.png")
+image = pygame.image.load(f"assets/skins/{playerSkin}/jump.png")
 jumpAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
+
+
+# remove heart when getting damage
+def removeHeart(player):
+    for heart in reversed(player.life):
+        if heart.life > 0:
+            heart.life -= 1
+            break
+    for heart in player.life:
+        heart.speed = 7
+
+# handle the key press of the player movement
+def handle_movement(player, WIDTH):
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        player.move_right()
+    elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        player.move_Left(WIDTH)
+    else:
+        player.currentSpeed = 0
 
 # heart class
 class Heart:
@@ -68,8 +89,8 @@ class Player:
 
 
     # draw the player and animations
-    def draw(self, cam, WIN):
-        x, y = cam.get(self.x, self.y)
+    def draw(self, cam, WIN, WIDTH, HEIGHT):
+        x, y = cam.get(self.x, self.y, WIDTH, HEIGHT)
         draw_image = None
 
         if self.y_vel > 1:
@@ -173,12 +194,3 @@ class Player:
         if abs(time.time()-self.lastTime) > 0.04:
             self.currentFrame += 1
             self.lastTime = time.time()
-
-# remove heart when getting damage
-def removeHeart(player):
-    for heart in reversed(player.life):
-        if heart.life > 0:
-            heart.life -= 1
-            break
-    for heart in player.life:
-        heart.speed = 7
