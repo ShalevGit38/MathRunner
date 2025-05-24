@@ -2,7 +2,7 @@
 
 # camera follow the player and set the position for everything else using the get method
 class Camera:
-    SPEED = 75
+    SPEED = 0.5
 
     def __init__(self):
         self.x = 0
@@ -11,10 +11,10 @@ class Camera:
         self.camShakeTime = 0
 
     # update the position of the camera to follow the x, y
-    def update(self, x, y):
-        self.x += (x - self.x) / self.SPEED
+    def update(self, x, y, DeltaTime):
+        self.x += ((x - self.x) / self.SPEED)*DeltaTime
         if self.follow_y:
-            self.y += (y - self.y) / (self.SPEED/10)
+            self.y += ((y - self.y) / self.SPEED)*DeltaTime
         if self.camShakeTime > 0 and False:
             self.x += random.randint(-5, 5)
             self.y += random.randint(-10, 10)

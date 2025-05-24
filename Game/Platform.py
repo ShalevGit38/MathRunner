@@ -35,10 +35,10 @@ class Platform:
             WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))
 
     # move the platform if it's a moving platform
-    def move(self, player):
+    def move(self, player, DeltaTime):
         if self.question and not self.moved:
             player.play = False
-            self.rect.y += (self.toTop - self.rect.y) / 50
+            self.rect.y += (self.toTop - self.rect.y) / (0.5 / DeltaTime)
             if abs(self.rect.y-self.toTop) < 50:
                 self.moved = True
                 quest_equation = eq.equations[0]
@@ -61,9 +61,9 @@ class Quest:
         self.chooseX = 0
 
     # draw the answers and the quest
-    def draw(self, cam, WIN, WIDTH, HEIGHT):
+    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime):
         x, y = cam.get(self.x, self.y + math.sin(self.questMovement / 20) * 20, WIDTH, HEIGHT)
-        self.drawQuest(x, y, WIN)
+        self.drawQuest(x, y, WIN, DeltaTime)
         self.drawAnswer(x, y, WIN)
         self.drawChoose(x, y, WIN)
 
@@ -73,8 +73,8 @@ class Quest:
         pygame.draw.line(WIN, (255, 255, 0), ((x-200)+(self.chooseX)-100, y+50), ((x-200)+(self.chooseX)+100, y+50), 10)
 
     # draw the answer
-    def drawQuest(self, x, y, WIN):
-        self.questMovement += 1
+    def drawQuest(self, x, y, WIN, DeltaTime):
+        self.questMovement += 170*DeltaTime
         text_s = font.render(self.quest, 1, (0, 0, 0))
         text_r = text_s.get_rect()
         text_r.center = (x, y - 100)

@@ -67,8 +67,8 @@ class Heart:
 
 # player class
 class Player:
-    SPEED = 5
-    GRAVITY = 0.0980665
+    SPEED = 700
+    GRAVITY = 1500
 
     def __init__(self, HEIGHT):
         self.size = 50
@@ -80,7 +80,8 @@ class Player:
         self.life = [Heart(), Heart(), Heart(), Heart(), Heart()]
         self.play = True
         self.currentFrame = 0
-        self.lastTime = time.time()
+        self.timeAnimation = 0
+        self.animationSpeed = 0.04
         self.currentAnimation = 0
         self.direction = 0
         self.spawnPoint = (self.x, self.y)
@@ -89,13 +90,13 @@ class Player:
 
 
     # draw the player and animations
-    def draw(self, cam, WIN, WIDTH, HEIGHT):
+    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime):
         x, y = cam.get(self.x, self.y, WIDTH, HEIGHT)
         draw_image = None
 
-        if self.y_vel > 1:
+        if self.y_vel > self.GRAVITY*DeltaTime*3:
             self.currentAnimation = 3
-        elif self.y_vel < -1:
+        elif self.y_vel < -self.GRAVITY*DeltaTime*3:
             self.currentAnimation = 4
 
         if self.currentAnimation == 0:
@@ -123,16 +124,16 @@ class Player:
         cam.x, cam.y = self.spawnPoint
 
     # check where and if the player is colliding with the platforms
-    def collidePlatform(self, platforms, WIDTH, HEIGHT, cam):
+    def collidePlatform(self, platforms, WIDTH, HEIGHT, cam, DeltaTime):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
         if self.y > HEIGHT-500 and self.x > WIDTH+500:
             self.spawn(cam)
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
-                if self.x >= platform.rect.x+platform.rect.width-5:
+                if self.x >= platform.rect.x+platform.rect.width-20:
                     self.jump = 1
                     self.x = platform.rect.x+platform.rect.width
-                elif self.x+self.size <= platform.rect.x+5:
+                elif self.x+self.size <= platform.rect.x+20:
                     self.jump = 1
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
@@ -146,7 +147,7 @@ class Player:
                         self.spawnPoint = (platform.rect.x+platform.rect.width/2-self.size/2, platform.rect.y-100)
                     self.y_vel = 0
                     self.y = platform.rect.y - self.size
-                    quest = platform.move(self)
+                    quest = platform.move(self, DeltaTime)
                     if quest:
                         return quest
                 elif self.y_vel < 0:
@@ -155,10 +156,12 @@ class Player:
                 return
 
     # make gravity effect the player
-    def addGravity(self, HEIGHT, cam):
-        self.y_vel += self.GRAVITY
-        if self.y_vel > 0:
-            self.y_vel += self.GRAVITY
+    def addGravity(self, HEIGHT, cam, DeltaTime):
+        self.y_vel += self.GRAVITY*DeltaTime
+        #if self.y_vel > 0:
+            #self.y_vel += self.GRAVITY
+
+        self.y += self.y_vel*DeltaTime
 
         if self.y > HEIGHT/2-self.size+150:
             self.y_vel = 0
@@ -167,8 +170,6 @@ class Player:
             if self.isInAir:
                 cam.camShakeTime = 25
             self.isInAir = False
-
-        self.y += self.y_vel
 
     # move the player left
     def move_Left(self, WIDTH):
@@ -184,13 +185,14 @@ class Player:
         self.currentAnimation = 0
         self.direction = 0
     
-    def move(self):
-        self.x += self.currentSpeed
+    def move(self, DeltaTime):
+        self.x += self.currentSpeed*DeltaTime
         if abs(self.y_vel) > self.GRAVITY*2:
             self.isInAir = True
 
     # skip by the animations to make the run and idle smooth
-    def moveAnimation(self):
-        if abs(time.time()-self.lastTime) > 0.04:
+    def moveAnimation(self, DeltaTime):
+        self.timeAnimation += DeltaTime
+        if self.timeAnimation > self.animationSpeed:
+            self.timeAnimation = 0
             self.currentFrame += 1
-            self.lastTime = time.time()

@@ -14,7 +14,7 @@ pygame.init()
 # initialize the window
 WIN = pygame.display.set_mode((0, 0))
 WIDTH, HEIGHT = WIN.get_width(), WIN.get_height()
-FPS = 144
+FPS = 120 # 60 - 144
 
 # set the basic font
 font = pygame.font.Font(None, 100)

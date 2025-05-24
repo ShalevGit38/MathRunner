@@ -15,22 +15,23 @@ def getDistance(x, y, x1, y1):
     return ((x - x1)**2 + (y - y1)**2) ** 0.5
 
 # draw everything in the gameloop that need to be drawn
-def drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN):
+def drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN, DeltaTime):
     drawBG(cam, floors, WIDTH, HEIGHT, WIN)
 
     for platform in platforms:
         if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
             platform.draw(cam, WIN, WIDTH, HEIGHT)
 
-    player.draw(cam, WIN, WIDTH, HEIGHT)
+    player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
 
 # update everything that is player functions
-def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT):
-    quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam)
-    player.addGravity(HEIGHT, cam)
-    player.moveAnimation()
+def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime):
+    handle_movement(player, WIDTH)
+    player.addGravity(HEIGHT, cam, DeltaTime)
+    player.moveAnimation(DeltaTime)
+    quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime)
     if player.play:
-        player.move()
+        player.move(DeltaTime)
     if player.y > 50:
         cam.follow_y = True
     else:
@@ -85,6 +86,9 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS):
     # set the quest which is the question show above the platform to be None at first
     quest = None
 
+    # set the delta time -> delta time to run the game in the same speed anywhere
+    DeltaTime = 1 / FPS
+
     # set the exit button
     exitButton = Button((WIDTH-110, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
 
@@ -102,7 +106,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS):
                 # jump when space is pressed
                 if event.key == pygame.K_SPACE and player.jump > 0 and player.play:
                     player.y -= 1
-                    player.y_vel = -8
+                    player.y_vel = -1200
                     player.jump = 0
                     player.isInAir = True
                 # exit the game where the escape is pressed
@@ -110,19 +114,17 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS):
                     return "main-menu"
 
         # draws everything to the screen
-        drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN)
-        # moves the player
-        handle_movement(player, WIDTH)
+        drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN, DeltaTime)
         # move the camera towards the player position
-        cam.update(player.x, player.y)
+        cam.update(player.x, player.y, DeltaTime)
         # try and update the player, and it is colliding with a quest platform then its set the q as the quest
-        q = updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT)
+        q = updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime)
         if q:
             quest = q
 
         # draw the quest and update
         if quest:
-            quest.draw(cam, WIN, WIDTH, HEIGHT)
+            quest.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
             answer = quest.update(player)
             if answer:
                 quest = None
