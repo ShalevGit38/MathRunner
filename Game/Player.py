@@ -94,9 +94,9 @@ class Player:
         x, y = cam.get(self.x, self.y, WIDTH, HEIGHT)
         draw_image = None
 
-        if self.y_vel > self.GRAVITY*DeltaTime*3:
+        if self.y_vel > self.GRAVITY*DeltaTime*7:
             self.currentAnimation = 3
-        elif self.y_vel < -self.GRAVITY*DeltaTime*3:
+        elif self.y_vel < -self.GRAVITY*DeltaTime*7:
             self.currentAnimation = 4
 
         if self.currentAnimation == 0:
@@ -126,7 +126,7 @@ class Player:
     # check where and if the player is colliding with the platforms
     def collidePlatform(self, platforms, WIDTH, HEIGHT, cam, DeltaTime):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
-        if self.y > HEIGHT-500 and self.x > WIDTH+500:
+        if self.y > HEIGHT-510 and self.x > WIDTH+500:
             self.spawn(cam)
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
@@ -158,8 +158,8 @@ class Player:
     # make gravity effect the player
     def addGravity(self, HEIGHT, cam, DeltaTime):
         self.y_vel += self.GRAVITY*DeltaTime
-        #if self.y_vel > 0:
-            #self.y_vel += self.GRAVITY
+        if self.y_vel > 0:
+            self.y_vel += self.GRAVITY*DeltaTime
 
         self.y += self.y_vel*DeltaTime
 

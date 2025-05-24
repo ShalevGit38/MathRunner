@@ -33,7 +33,7 @@ def RunGame():
         if currentMode == "gameloop":
             currentMode = GameLoop(WIDTH, HEIGHT, WIN, FPS)
         elif currentMode == "loadingScreen":
-            thread = threading.Thread(target=eq.createList, args=(100,))
+            thread = threading.Thread(target=eq.getEquations, args=(100,))
             currentMode = LoadingScreen(thread, WIDTH, HEIGHT, WIN)
         elif currentMode == "main-menu":
             currentMode = MainMenu(WIDTH, HEIGHT, WIN, FPS)

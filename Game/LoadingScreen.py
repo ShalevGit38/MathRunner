@@ -1,43 +1,43 @@
 import pygame
 import math
 from Button import Button
-
+import time
 
 class Circle:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.color = 255
-		self.size = 20
-	
-	def update(self):
-		self.color = max(self.color-4, 0)
-		self.size = max(self.size-0, 0)
-	
-	def draw(self, WIN):
-		c = int(self.color)
-		pygame.draw.circle(WIN, (c, c, c), (self.x, self.y), self.size)
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.color = 255
+        self.size = 20
+    
+    def update(self):
+        self.color = max(self.color-4, 0)
+        self.size = max(self.size-0, 0)
+    
+    def draw(self, WIN):
+        c = int(self.color)
+        pygame.draw.circle(WIN, (c, c, c), (self.x, self.y), self.size)
 
 
 class LoadingAnimation:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.angle = 0
-		self.circles = []
-	
-	def update(self):
-		x = self.x + math.cos(self.angle) * 75
-		y = self.y + math.sin(self.angle) * 75
-		self.circles.append(Circle(x, y))
-		self.angle += 0.02
-	
-	def draw(self, WIN):
-		for circle in self.circles:
-			circle.draw(WIN)
-			circle.update()
-			if circle.color == 0:
-				self.circles.remove(circle)
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.angle = 0
+        self.circles = []
+    
+    def update(self):
+        x = self.x + math.cos(self.angle) * 75
+        y = self.y + math.sin(self.angle) * 75
+        self.circles.append(Circle(x, y))
+        self.angle += 0.02
+    
+    def draw(self, WIN):
+        for circle in self.circles:
+            circle.draw(WIN)
+            circle.update()
+            if circle.color == 0:
+                self.circles.remove(circle)
 
 def LoadingScreen(thread, WIDTH, HEIGHT, WIN):
     loading = LoadingAnimation(WIDTH-110, HEIGHT-110)
