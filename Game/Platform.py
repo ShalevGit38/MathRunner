@@ -93,7 +93,7 @@ class Quest:
         WIN.blit(text_s, text_r)
 
     # update the choose one and set it by left and right arrow keys
-    def update(self, player):
+    def update(self, player, CorrectSound):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.choose = 0
@@ -102,6 +102,9 @@ class Quest:
         if keys[pygame.K_SPACE] and self.questMovement > 50:
             if self.choose != self.correctIndex:
                 removeHeart(player)
+            else:
+                # play the correct sound
+                CorrectSound.play()
             player.play = True
             return True
         return False

@@ -19,9 +19,10 @@ FPS = 120 # 60 - 144
 # set the basic font
 font = pygame.font.Font(None, 100)
 
-#load music
+# load and play music / load sound fx's
 pygame.mixer.music.load('assets/game_music/Pixelated Horizons.mp3')
 pygame.mixer.music.play(-1)
+CorrectSound = pygame.mixer.Sound('assets/game_music/correct.mp3')
 
 # variable to the save the current screen / Mode
 currentMode = "main-menu"
@@ -31,7 +32,7 @@ def RunGame():
     global currentMode
     while currentMode != "quit":
         if currentMode == "gameloop":
-            currentMode = GameLoop(WIDTH, HEIGHT, WIN, FPS)
+            currentMode = GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound)
         elif currentMode == "loadingScreen":
             thread = threading.Thread(target=eq.getEquations, args=(100,))
             currentMode = LoadingScreen(thread, WIDTH, HEIGHT, WIN)

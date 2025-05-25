@@ -65,7 +65,7 @@ def drawBG(cam, floors, WIDTH, HEIGHT, WIN):
 
 
 # main gameloop
-def GameLoop(WIDTH, HEIGHT, WIN, FPS):
+def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound):
     run = True
     clock = pygame.time.Clock()
 
@@ -125,7 +125,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS):
         # draw the quest and update
         if quest:
             quest.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
-            answer = quest.update(player)
+            answer = quest.update(player, CorrectSound)
             if answer:
                 quest = None
 
