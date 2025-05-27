@@ -16,7 +16,6 @@ else:
 
 # load floors
 floor = pygame.image.load("assets/floors/floor.png")
-bad_floor = pygame.image.load("assets/floors/bad_floor.png")
 
 # returns the distance from one point to another
 def getDistance(x, y, x1, y1):
@@ -35,29 +34,28 @@ def drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN, DeltaTime
 # update everything that is player functions
 def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick):
     handle_movement(player, WIDTH, joystick)
-    player.addGravity(HEIGHT, cam, DeltaTime)
+    player.addGravity(HEIGHT, cam, DeltaTime, WIDTH)
     player.moveAnimation(DeltaTime)
     quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime)
     if player.play:
         player.move(DeltaTime)
-    if player.y > 50:
-        cam.follow_y = True
-    else:
-        cam.follow_y = False
+    cam.follow_x = True if player.x > 100 else False
+    cam.follow_y = True if player.y > 50 else False
     if quest:
         return quest
 
 # draw the background and loop the floor
 def drawBG(cam, floors, WIDTH, HEIGHT, WIN):
     # Background color behind floor
-    _, y = cam.get(0, HEIGHT / 2 + 150, WIDTH, HEIGHT)
-    pygame.draw.rect(WIN, (217, 211, 144), (0, y, WIDTH, 600))
+    x, y = cam.get(-900, HEIGHT / 2 + 150, WIDTH, HEIGHT)
+    pygame.draw.rect(WIN, (217, 211, 144), (x, y, WIDTH+1440, 1000))
 
     # Draw the visible floor tiles
     for i in range(2):
         x, y = cam.get(floors[i], HEIGHT / 2 + 150, WIDTH, HEIGHT)
-        img = bad_floor if floors[i] > WIDTH else floor
-        WIN.blit(img, (x, y))
+        img = None if floors[i] > WIDTH else floor
+        if img:
+            WIN.blit(img, (x, y))
 
     floor_width = floor.get_width()
 

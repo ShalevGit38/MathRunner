@@ -8,11 +8,13 @@ class Camera:
         self.x = 0
         self.y = 0
         self.follow_y = True
+        self.follow_x = True
         self.camShakeTime = 0
 
     # update the position of the camera to follow the x, y
     def update(self, x, y, DeltaTime):
-        self.x += ((x - self.x) / self.SPEED)*DeltaTime
+        if self.follow_x:
+            self.x += ((x - self.x) / self.SPEED)*DeltaTime
         if self.follow_y:
             self.y += ((y - self.y) / self.SPEED)*DeltaTime
         if self.camShakeTime > 0 and False:

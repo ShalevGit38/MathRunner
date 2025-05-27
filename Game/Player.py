@@ -48,7 +48,7 @@ def handle_movement(player, WIDTH, joystick):
     joystickAmount = joystick.get_axis(0)
     if keys[pygame.K_d] or keys[pygame.K_RIGHT] or joystickAmount > 0.5:
         player.move_right()
-    elif keys[pygame.K_a] or keys[pygame.K_LEFT] or joystickAmount < -0.5:
+    elif keys[pygame.K_a] or keys[pygame.K_LEFT] or joystickAmount < -0.5 and player.x > -400:
         player.move_Left(WIDTH)
     else:
         player.currentSpeed = 0
@@ -68,12 +68,12 @@ class Heart:
 
 # player class
 class Player:
-    SPEED = 700
-    GRAVITY = 1500
+    SPEED = 600
+    GRAVITY = 1600
 
     def __init__(self, HEIGHT):
         self.size = 50
-        self.x = 0
+        self.x = 100
         self.y = HEIGHT / 2 - self.size + 150
         self.color = (255, 0, 0)
         self.y_vel = 0
@@ -127,7 +127,7 @@ class Player:
     # check where and if the player is colliding with the platforms
     def collidePlatform(self, platforms, WIDTH, HEIGHT, cam, DeltaTime):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
-        if self.y > HEIGHT-510 and self.x > WIDTH+500:
+        if self.y > HEIGHT and self.x > WIDTH+500:
             self.spawn(cam)
         for platform in platforms:
             if selfRect.colliderect(platform.rect):
@@ -157,14 +157,14 @@ class Player:
                 return
 
     # make gravity effect the player
-    def addGravity(self, HEIGHT, cam, DeltaTime):
+    def addGravity(self, HEIGHT, cam, DeltaTime, WIDTH):
         self.y_vel += self.GRAVITY*DeltaTime
         if self.y_vel > 0:
             self.y_vel += self.GRAVITY*DeltaTime
 
         self.y += self.y_vel*DeltaTime
 
-        if self.y > HEIGHT/2-self.size+150:
+        if self.y > HEIGHT/2-self.size+150 and self.x < WIDTH+500:
             self.y_vel = 0
             self.y = HEIGHT/2-self.size+150
             self.jump = 1
