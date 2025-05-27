@@ -46,7 +46,6 @@ def handle_movement(player, WIDTH, joystick):
     keys = pygame.key.get_pressed()
 
     joystickAmount = joystick.get_axis(0)
-    print(joystickAmount)
     if keys[pygame.K_d] or keys[pygame.K_RIGHT] or joystickAmount > 0.5:
         player.move_right()
     elif keys[pygame.K_a] or keys[pygame.K_LEFT] or joystickAmount < -0.5:

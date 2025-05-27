@@ -11,7 +11,6 @@ pygame.joystick.init()
 if pygame.joystick.get_count() > 0:
     joystick = pygame.joystick.Joystick(0)  # Use the first joystick
     joystick.init()
-    print("Controller connected:", joystick.get_name())
 else:
     print("No controller found")
 
