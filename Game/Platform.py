@@ -93,13 +93,14 @@ class Quest:
         WIN.blit(text_s, text_r)
 
     # update the choose one and set it by left and right arrow keys
-    def update(self, player, CorrectSound):
+    def update(self, player, CorrectSound, joystick):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.choose = 0
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        joystickAmount = joystick.get_axis(0)
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d] or joystickAmount > 0.5:
             self.choose = 1
-        if keys[pygame.K_SPACE] and self.questMovement > 50:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a] or joystickAmount < -0.5:
+            self.choose = 0
+        if (keys[pygame.K_SPACE] or joystick.get_button(0)) and self.questMovement > 50:
             if self.choose != self.correctIndex:
                 removeHeart(player)
             else:

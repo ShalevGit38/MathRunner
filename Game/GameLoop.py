@@ -6,6 +6,15 @@ from Camera import Camera
 from Platform import Platform
 from Platform import addPlatform
 
+pygame.joystick.init()
+
+if pygame.joystick.get_count() > 0:
+    joystick = pygame.joystick.Joystick(0)  # Use the first joystick
+    joystick.init()
+    print("Controller connected:", joystick.get_name())
+else:
+    print("No controller found")
+
 # load floors
 floor = pygame.image.load("assets/floors/floor.png")
 bad_floor = pygame.image.load("assets/floors/bad_floor.png")
@@ -25,8 +34,8 @@ def drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN, DeltaTime
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
 
 # update everything that is player functions
-def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime):
-    handle_movement(player, WIDTH)
+def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick):
+    handle_movement(player, WIDTH, joystick)
     player.addGravity(HEIGHT, cam, DeltaTime)
     player.moveAnimation(DeltaTime)
     quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime)
@@ -92,6 +101,10 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound):
     # set the exit button
     exitButton = Button((WIDTH-110, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
 
+    # variable to make the x button on a contoller work only once
+    # without the otion to long press it
+    longXpress = True
+    
     while run:
         # fill the screen with the color blue
         WIN.fill((0, 200, 255))
@@ -105,28 +118,32 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound):
             if event.type == pygame.KEYDOWN:
                 # jump when space is pressed
                 if event.key == pygame.K_SPACE and player.jump > 0 and player.play:
-                    player.y -= 1
-                    player.y_vel = -1200
-                    player.jump = 0
-                    player.isInAir = True
+                    player.playerJump()
                 # exit the game where the escape is pressed
                 if event.key == pygame.K_ESCAPE:
                     return "main-menu"
+
+        if joystick.get_button(0) and player.jump > 0 and player.play and not longXpress:
+            player.playerJump()
+            longXpress = True
+        elif not joystick.get_button(0):
+            longXpress = False
 
         # draws everything to the screen
         drawEverything(player, platforms, cam, floors, WIDTH, HEIGHT, WIN, DeltaTime)
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, and it is colliding with a quest platform then its set the q as the quest
-        q = updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime)
+        q = updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick)
         if q:
             quest = q
 
         # draw the quest and update
         if quest:
             quest.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
-            answer = quest.update(player, CorrectSound)
+            answer = quest.update(player, CorrectSound, joystick)
             if answer:
+                longXpress = True
                 quest = None
 
         # draw and make the exit button work

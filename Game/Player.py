@@ -42,12 +42,14 @@ def removeHeart(player):
         heart.speed = 7
 
 # handle the key press of the player movement
-def handle_movement(player, WIDTH):
+def handle_movement(player, WIDTH, joystick):
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+    joystickAmount = joystick.get_axis(0)
+    print(joystickAmount)
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT] or joystickAmount > 0.5:
         player.move_right()
-    elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+    elif keys[pygame.K_a] or keys[pygame.K_LEFT] or joystickAmount < -0.5:
         player.move_Left(WIDTH)
     else:
         player.currentSpeed = 0
@@ -170,6 +172,12 @@ class Player:
             if self.isInAir:
                 cam.camShakeTime = 25
             self.isInAir = False
+    
+    def playerJump(self):
+        self.y -= 1
+        self.y_vel = -1100
+        self.jump = 0
+        self.isInAir = True
 
     # move the player left
     def move_Left(self, WIDTH):
