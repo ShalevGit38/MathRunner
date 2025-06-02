@@ -56,7 +56,7 @@ def drawBG(cam, WIDTH, HEIGHT, WIN):
 
 
 # main gameloop
-def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound):
+def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
     run = True
     clock = pygame.time.Clock()
 
@@ -88,6 +88,8 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound):
     # variable to make the x button on a contoller work only once
     # without the otion to long press it
     longXpress = True
+    
+    print(currentLevel)
     
     while run:
         # fill the screen with the color blue

@@ -48,7 +48,7 @@ def MainMenu(WIDTH, HEIGHT, WIN, FPS):
                 if event.key == pygame.K_ESCAPE:
                     return "quit"
                 if event.key == pygame.K_RETURN:
-                    return "loadingScreen"
+                    return "levelscreen"
 
         # draw all the buttons
         playButton.draw(WIN)
@@ -58,7 +58,7 @@ def MainMenu(WIDTH, HEIGHT, WIN, FPS):
 
         # check which button got clicked and their feature
         if playButton.onClick():
-            return "loadingScreen"
+            return "levelscreen"
         if exitButton.onClick():
             return "quit"
         if helpButton.onClick():
