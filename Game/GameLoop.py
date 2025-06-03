@@ -30,10 +30,10 @@ def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime):
     drawBG(cam, WIDTH, HEIGHT, WIN)
 
     for platform in platforms:
-        if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
-            if platform.isAlive:
+        if platform.isAlive:
+            if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
                 platform.draw(cam, WIN, WIDTH, HEIGHT)
-            platform.update()
+                platform.update()
 
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
 

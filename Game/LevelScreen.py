@@ -1,22 +1,32 @@
 import pygame
 from Button import Button
 
-
-
-def drawButtons(buttons, WIN):
+def drawButtons(buttons, WIN, levelChoose):
     for button in buttons:
         button.draw(WIN)
+        if button.text == str(levelChoose):
+            pygame.draw.rect(WIN, (255, 255, 0), (button.rect), 5, 10)
+
+def makeButtons(buttons, WIDTH, HEIGHT, levelsRow):
+    for y in range(2):
+        for x in range(5):
+            x = (WIDTH/2-5*100) + x*200
+            y = (HEIGHT/2-2*100) + y*200
+            size = 100
+            buttons.append(Button((x, y, size, size), f"{(x + y*5 + 1) + (levelsRow-1)*10}", (0, 200, 0), (0, 100, 0), 75))
 
 def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     run = True
     clock = pygame.time.Clock()
     
+    levelChoose = 1
+    levelsRow = 1
+    
     buttons = []
-    for y in range(2):
-        for x in range(5):
-            buttons.append(Button(((WIDTH/2-5*100) + x*200, (HEIGHT/2-2*100) + y*200, 100, 100), f"{x + y*5 + 1}", (0, 200, 0), (0, 100, 0), 75))
+    makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
     
     exitButton = Button((WIDTH-110, 10, 100, 50), "BACK", (200, 0, 0), (100, 0, 0), 40)
+    playButton = Button((WIDTH/2-150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
     
     while run:
         WIN.fill((0, 0, 0))
@@ -29,21 +39,30 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
                 # press escape to return to the main menu
                 if event.key == pygame.K_ESCAPE:
                     return "main-menu", None
-                #if event.key == pygame.K_RETURN:
-                    #return "loadingScreen", None
+                if event.key == pygame.K_RIGHT:
+                    levelsRow = min(levelsRow+1, 2)
+                    makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
+                if event.key == pygame.K_LEFT:
+                    levelsRow = max(levelsRow-1, 1)
+                    makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
+                if event.key == pygame.K_RETURN:
+                    return "loadingScreen", levelChoose
                 
                 ########*** make a button to PLAY the level, select a level before play
         
         # draw the buttons
-        drawButtons(buttons, WIN)
+        drawButtons(buttons, WIN, levelChoose)
         exitButton.draw(WIN)
+        playButton.draw(WIN)
         
         for button in buttons:
             if button.onClick():
-                return "loadingScreen", button.text
+                levelChoose = int(button.text)
             
         if exitButton.onClick():
             return "main-menu", None
+        if playButton.onClick():
+            return "loadingScreen", levelChoose
         
         pygame.display.update()
         clock.tick(FPS)
