@@ -29,7 +29,7 @@ class Button:
     def onClick(self):
         mp = pygame.mouse.get_pressed()[0]
         mx, my = pygame.mouse.get_pos()
-        if self.rect.x < mx < self.rect.x+self.rect.width and self.rect.y < my < self.rect.y+self.rect.height:
+        if self.rect.collidepoint(mx, my):
             self.currentColor = self.toColor
             if mp and not self.clicked:
                 self.clicked = True
