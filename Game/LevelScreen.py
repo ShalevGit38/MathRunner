@@ -1,6 +1,9 @@
 import pygame
 from Button import Button
 
+levels_image = pygame.image.load("assets/logos/levels.png")
+levels_image = pygame.transform.scale(levels_image, (levels_image.get_width(), levels_image.get_height()))
+
 def drawButtons(buttons, WIN, levelChoose):
     for button in buttons:
         button.draw(WIN)
@@ -10,10 +13,11 @@ def drawButtons(buttons, WIN, levelChoose):
 def makeButtons(buttons, WIDTH, HEIGHT, levelsRow):
     for y in range(2):
         for x in range(5):
-            x = (WIDTH/2-5*100) + x*200
-            y = (HEIGHT/2-2*100) + y*200
             size = 100
-            buttons.append(Button((x, y, size, size), f"{(x + y*5 + 1) + (levelsRow-1)*10}", (0, 200, 0), (0, 100, 0), 75))
+            buttonX = (WIDTH/2 - (size*5) + size/2) + x*size*2
+            buttonY = (HEIGHT/2 - (size*2)/2) + y*size*2
+            level = (x + y*5 + 1) + (levelsRow-1)*10
+            buttons.append(Button((buttonX, buttonY, size, size), f"{level}", (0, 200, 0), (0, 100, 0), 75))
 
 def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     run = True
@@ -54,6 +58,9 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
         drawButtons(buttons, WIN, levelChoose)
         exitButton.draw(WIN)
         playButton.draw(WIN)
+        
+        # draw the levels logo
+        WIN.blit(levels_image, (WIDTH/2-levels_image.get_width()/2, 0))
         
         for button in buttons:
             if button.onClick():
