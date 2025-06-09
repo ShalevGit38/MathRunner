@@ -3,8 +3,9 @@ from Player import handle_movement
 from Player import Player
 from Button import Button
 from Camera import Camera
+from Platform import Platform
+from Platform import addPlatform
 from Cloud import drawClouds, spawnCloud, removeClouds
-from Levels import getLevels
 
 pygame.joystick.init()
 
@@ -23,7 +24,7 @@ def getDistance(x, y, x1, y1):
     return ((x - x1)**2 + (y - y1)**2) ** 0.5
 
 # draw everything in the gameloop that need to be drawn
-def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime):
+def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, joystick):
     drawClouds(clouds, WIN, WIDTH, HEIGHT, cam)
     
     drawBG(cam, WIDTH, HEIGHT, WIN)
@@ -31,8 +32,8 @@ def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime):
     for platform in platforms:
         if platform.isAlive:
             if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
-                platform.draw(cam, WIN, WIDTH, HEIGHT)
-                platform.update()
+                platform.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, joystick)
+        platform.update()
 
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
 
@@ -41,13 +42,11 @@ def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joysti
     handle_movement(player, WIDTH, joystick, cam)
     player.addGravity(HEIGHT, cam, DeltaTime, WIDTH, floor_img)
     player.moveAnimation(DeltaTime)
-    quest = player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime, floor_img)
+    player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime, floor_img)
     if player.play:
         player.move(DeltaTime)
     cam.follow_x = True if player.x > -100 + WIDTH/2 else False
     cam.follow_y = True if player.y > 50 else False
-    if quest:
-        return quest
 
 # draw the background and loop the floor
 def drawBG(cam, WIDTH, HEIGHT, WIN):
@@ -64,9 +63,15 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
 
     # the main player of the game initialize
     player = Player(WIDTH, HEIGHT)
-    
-    # make the current level
-    platforms = getLevels()[currentLevel-1].platforms
+
+    # sets all the platforms
+    firstPlatform = Platform((WIDTH-200, 500, 200, 40))
+    firstPlatform.isFallingPlatfrom = False
+    firstPlatform.question = False
+    platforms = [firstPlatform]
+    for i in range(30):
+        addPlatform(platforms, i*700, WIDTH)
+    currentQuestionPlatform = None
 
     # set the camera
     cam = Camera()
@@ -116,21 +121,11 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
                 longXpress = False
 
         # draws everything to the screen
-        drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime)
+        drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, joystick)
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, if it is colliding with a quest platform then its set the question as the quest
-        question = updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick)
-        if question:
-            quest = question
-
-        # draw the quest and update
-        if quest:
-            quest.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
-            answer = quest.update(player, CorrectSound, joystick)
-            if answer:
-                longXpress = True
-                quest = None
+        updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick)
 
         # draw and make the exit button work
         exitButton.draw(WIN)

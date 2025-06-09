@@ -14,37 +14,54 @@ quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning
 
 font = pygame.font.Font(None, 100)
 
+# adds another platform to the x position at random y
+def addPlatform(platforms, x, WIDTH):
+    platforms.append(Platform((x+WIDTH+random.randint(150, 250), random.randint(300, 500), 200, 40)))
+
 # object of the platform
 class Platform:
     def __init__(self, rect):
         self.rect = pygame.Rect(rect)
         self.question = (random.randint(1, 5) <= 2)
+        self.hasQuestion = False
+        self.correctAnswer = False
+        self.quest = None
         self.toTop = self.rect.y - 400
-        self.moved = False
         self.timeRemain = 0
         self.isAlive = True
         self.isFallingPlatfrom = True
         self.platformFall = False
 
     # draw the platform using the camera
-    def draw(self, cam, WIN, WIDTH, HEIGHT):
+    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, joystick):
         x, y = cam.get(self.rect.x, self.rect.y, WIDTH, HEIGHT)
         WIN.blit(platform_image, (x, y))
-        if self.question and not self.moved:
-            WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))
+        if self.question and not self.hasQuestion:
+            WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))\
+        
+        # draw the quest and update
+        if self.quest:
+            self.quest.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
+            answer = self.quest.update(joystick)
+            if answer == None:
+                return
+            if answer:
+                self.correctAnswer = True
+                CorrectSound.play()
+                player.spawnPoint = (self.rect.x+self.rect.width/2-player.size/2, self.toTop-100)
+            else:
+                removeHeart(player)
+            self.quest = False
 
     # move the platform if it's a moving platform
-    def move(self, player, DeltaTime):
-        if self.question and not self.moved:
-            player.play = False
-            self.rect.y += (self.toTop - self.rect.y) / (0.5 / DeltaTime)
-            if abs(self.rect.y-self.toTop) < 50:
-                self.moved = True
-                quest_equation = eq.equations[0]
-                eq.equations.pop(0)
-                equationFixed = quest_equation.replace("÷", "/").replace("×", "*")
-                quest = Quest(quest_equation, eval(equationFixed), self.rect.x+self.rect.width/2, self.rect.y-200)
-                return quest
+    def move(self, DeltaTime):
+        if self.question and not self.hasQuestion:
+            self.hasQuestion = True
+            quest_equation = eq.equations[0]
+            eq.equations.pop(0)
+            equationFixed = quest_equation.replace("÷", "/").replace("×", "*")
+            quest = Quest(quest_equation, eval(equationFixed), self.rect.x+self.rect.width/2, self.rect.y-200)
+            return quest
     
     def update(self):
         if self.platformFall:
@@ -57,6 +74,8 @@ class Platform:
                 self.isAlive = True
                 self.timeRemain = 0
                 self.platformFall = False
+        if self.correctAnswer:
+            self.rect.y -= (self.rect.y - self.toTop) / 100
 
 # the quest to draw the question and answers
 class Quest:
@@ -104,20 +123,13 @@ class Quest:
         WIN.blit(text_s, text_r)
 
     # update the choose one and set it by left and right arrow keys
-    def update(self, player, CorrectSound, joystick):
+    def update(self, joystick):
         keys = pygame.key.get_pressed()
         if joystick:
             joystickAmount = joystick.get_axis(0)
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d] or (joystick and joystickAmount > 0.5):
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) or (joystick and joystickAmount > 0.5):
             self.choose = 1
-        if keys[pygame.K_LEFT] or keys[pygame.K_a] or (joystick and joystickAmount < -0.5):
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) or (joystick and joystickAmount < -0.5):
             self.choose = 0
-        if (keys[pygame.K_SPACE] or (joystick and joystick.get_button(0))) and self.questMovement > 50:
-            if self.choose != self.correctIndex:
-                removeHeart(player)
-            else:
-                # play the correct sound
-                CorrectSound.play()
-            player.play = True
-            return True
-        return False
+        if (keys[pygame.K_e] or (joystick and joystick.get_button(0))) and self.questMovement > 50:
+            return not (self.choose != self.correctIndex)

@@ -32,11 +32,10 @@ class Button:
         if self.rect.collidepoint(mx, my):
             self.currentColor = self.toColor
             if mp and not self.clicked:
+                self.clicked = True
                 return True
             if not mp:
                 self.clicked = False
-                return False
-            self.clicked = True
         else:
             self.currentColor = self.color
         return False
