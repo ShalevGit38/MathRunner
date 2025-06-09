@@ -1,14 +1,17 @@
 import pygame
 from Button import Button
+from Levels import maxLevel
 
 levels_image = pygame.image.load("assets/logos/levels.png")
 levels_image = pygame.transform.scale(levels_image, (levels_image.get_width(), levels_image.get_height()))
 
 def drawButtons(buttons, WIN, levelChoose):
     for button in buttons:
+        if int(button.text) > maxLevel:
+            button.currentColor = (255, 20, 0)
         button.draw(WIN)
         if button.text == str(levelChoose):
-            pygame.draw.rect(WIN, (255, 255, 0), (button.rect), 5, 10)
+            pygame.draw.rect(WIN, (0, 200, 0), (button.rect), 5, 10)
 
 def makeButtons(buttons, WIDTH, HEIGHT, levelsRow):
     for y in range(2):
@@ -17,7 +20,7 @@ def makeButtons(buttons, WIDTH, HEIGHT, levelsRow):
             buttonX = (WIDTH/2 - (size*5) + size/2) + x*size*2
             buttonY = (HEIGHT/2 - (size*2)/2) + y*size*2
             level = (x + y*5 + 1) + (levelsRow-1)*10
-            buttons.append(Button((buttonX, buttonY, size, size), f"{level}", (0, 200, 0), (0, 100, 0), 75))
+            buttons.append(Button((buttonX, buttonY, size, size), f"{level}", (200, 200, 200), (100, 100, 100), 75))
 
 def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     run = True
@@ -30,7 +33,7 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
     
     exitButton = Button((WIDTH-110, 10, 100, 50), "BACK", (200, 0, 0), (100, 0, 0), 40)
-    playButton = Button((WIDTH/2-150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
+    playButton = Button((WIDTH/2+150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
     
     while run:
         WIN.fill((0, 0, 0))
@@ -43,10 +46,10 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
                 # press escape to return to the main menu
                 if event.key == pygame.K_ESCAPE:
                     return "main-menu", None
-                if event.key == pygame.K_RIGHT:
-                    levelsRow = min(levelsRow+1, 2)
+                if event.key == pygame.K_RIGHT and levelsRow < 2:
+                    levelsRow += 1
                     makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT and levelsRow > 1:
                     levelsRow = max(levelsRow-1, 1)
                     makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
                 if event.key == pygame.K_RETURN:
@@ -63,8 +66,9 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
         WIN.blit(levels_image, (WIDTH/2-levels_image.get_width()/2, 0))
         
         for button in buttons:
-            if button.onClick():
-                levelChoose = int(button.text)
+            if int(button.text) <= maxLevel:
+                if button.onClick():
+                    levelChoose = int(button.text)
             
         if exitButton.onClick():
             return "main-menu", None

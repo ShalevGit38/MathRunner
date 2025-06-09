@@ -14,10 +14,6 @@ quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning
 
 font = pygame.font.Font(None, 100)
 
-# adds another platform to the x position at random y
-def addPlatform(platforms, x, WIDTH):
-    platforms.append(Platform((x+WIDTH+random.randint(150, 250), random.randint(300, 500), 200, 40)))
-
 # object of the platform
 class Platform:
     def __init__(self, rect):
