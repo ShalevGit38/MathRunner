@@ -2,7 +2,7 @@
 from Platform import Platform
 from random import randint
 
-maxLevel = 2
+maxLevel = 1
 currentLevel = 1
 
 class Level:
@@ -14,15 +14,15 @@ class Level:
         self.generateLevel(WIDTH)
     
     def generateLevel(self, WIDTH):
-        firstPlatform = Platform((WIDTH-200, 400, 200, 40))
+        firstPlatform = Platform((WIDTH-200, 500, 200, 40))
         firstPlatform.isFallingPlatfrom = False
         firstPlatform.question = False
-        platforms = [firstPlatform]
+        self.platforms.append(firstPlatform)
         for i in range(self.length):
-            self.addPlatform(i*800, WIDTH)
+            self.addPlatform(i*randint(600, 750), WIDTH)
     
     def addPlatform(self, x, WIDTH):
-        xPos = x+WIDTH+randint(150, 250)
+        xPos = x+WIDTH+randint(100, 200)
         yPos = randint(300, 500)
         platform = Platform((xPos, yPos, 200, 40))
         platform.isFallingPlatfrom = self.hasFallingPlatforms
@@ -34,8 +34,15 @@ def makeLevels(WIDTH):
     global levels
     levels = [
         Level(WIDTH, 1, False, 10),
-        Level(WIDTH, 2, True, 12)
+        Level(WIDTH, 2, True, 12),
+        Level(WIDTH, 3, True, 15)
     ]
 
 def getLevels():
     return levels
+
+def getLevelsAmount():
+    return len(levels)
+
+def getLevelPlatforms():
+    return levels[currentLevel-1].platforms
