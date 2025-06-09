@@ -2,7 +2,7 @@ import pygame
 from Button import Button
 from Window import Window
 
-name_image = pygame.image.load("assets/logos/name.png")
+name_image = pygame.image.load(resource_path("assets/logos/name.png")
 name_image = pygame.transform.scale(name_image, (name_image.get_width(), name_image.get_height()))
 
 music_playing = True

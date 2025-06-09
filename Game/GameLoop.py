@@ -15,8 +15,13 @@ else:
     print("No controller found")
     joystick = None
 
+<<<<<<< Updated upstream
 # load floor
 floor_img = pygame.image.load("assets/floors/floor.png")
+=======
+# load floors
+floor = pygame.image.load(resource_path("assets/floors/floor.png")
+>>>>>>> Stashed changes
 
 # returns the distance from one point to another
 def getDistance(x, y, x1, y1):
