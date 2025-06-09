@@ -7,9 +7,9 @@ import createProblem as eq
 pygame.init()
 
 # load platforms and quest images
-platform_image = pygame.image.load(resource_path("assets/platforms/platform.png")
+platform_image = pygame.image.load("assets/platforms/platform.png")
 platform_image = pygame.transform.scale(platform_image, (200, 40))
-quest_warning_image = pygame.image.load(resource_path("assets/platforms/questionSymbol.png")
+quest_warning_image = pygame.image.load("assets/platforms/questionSymbol.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
 
 font = pygame.font.Font(None, 100)

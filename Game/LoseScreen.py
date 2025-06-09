@@ -1,7 +1,7 @@
 import pygame
 from Button import Button
 
-lose_image = pygame.image.load(resource_path("assets/logos/lose.png")
+lose_image = pygame.image.load("assets/logos/lose.png")
 
 def LoseScreen(WIDTH, HEIGHT, WIN, FPS):
     global currentMode
