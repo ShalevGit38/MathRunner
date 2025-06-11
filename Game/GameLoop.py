@@ -3,8 +3,7 @@ from Player import handle_movement
 from Player import Player
 from Button import Button
 from Camera import Camera
-from Platform import Platform
-from Platform import addPlatform
+from Levels import getLevelPlatforms, getLevel
 from Cloud import drawClouds, spawnCloud, removeClouds
 
 pygame.joystick.init()
@@ -24,15 +23,17 @@ def getDistance(x, y, x1, y1):
     return ((x - x1)**2 + (y - y1)**2) ** 0.5
 
 # draw everything in the gameloop that need to be drawn
-def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, joystick):
+def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj):
     drawClouds(clouds, WIN, WIDTH, HEIGHT, cam)
+
+    levelObj.writeText(WIN, cam, WIDTH, HEIGHT)
     
     drawBG(cam, WIDTH, HEIGHT, WIN)
 
     for platform in platforms:
         if platform.isAlive:
             if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
-                platform.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, joystick)
+                platform.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick)
         platform.update()
 
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
@@ -57,7 +58,7 @@ def drawBG(cam, WIDTH, HEIGHT, WIN):
 
 
 # main gameloop
-def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
+def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
     run = True
     clock = pygame.time.Clock()
 
@@ -65,12 +66,9 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
     player = Player(WIDTH, HEIGHT)
 
     # sets all the platforms
-    firstPlatform = Platform((WIDTH-200, 500, 200, 40))
-    firstPlatform.isFallingPlatfrom = False
-    firstPlatform.question = False
-    platforms = [firstPlatform]
-    for i in range(30):
-        addPlatform(platforms, i*700, WIDTH)
+    platforms = getLevelPlatforms()
+    levelObj = getLevel()
+    
     currentQuestionPlatform = None
 
     # set the camera
@@ -90,8 +88,6 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
     # variable to make the x button on a contoller work only once
     # without the otion to long press it
     longXpress = True
-    
-    print(currentLevel)
     
     clouds = []
     
@@ -121,7 +117,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
                 longXpress = False
 
         # draws everything to the screen
-        drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, joystick)
+        drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj)
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, if it is colliding with a quest platform then its set the question as the quest

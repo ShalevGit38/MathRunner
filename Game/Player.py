@@ -147,7 +147,7 @@ class Player:
         self.y = platform.rect.y - self.size
         # change platform
         platform.platformFall = True
-        quest = platform.move(DeltaTime)
+        quest = platform.move()
         if quest:
             return quest
 

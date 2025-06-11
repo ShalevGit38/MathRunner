@@ -20,7 +20,7 @@ def addPlatform(platforms, x, WIDTH):
 
 # object of the platform
 class Platform:
-    def __init__(self, rect):
+    def __init__(self, rect, isFallingPlatform):
         self.rect = pygame.Rect(rect)
         self.question = (random.randint(1, 5) <= 2)
         self.hasQuestion = False
@@ -29,11 +29,11 @@ class Platform:
         self.toTop = self.rect.y - 400
         self.timeRemain = 0
         self.isAlive = True
-        self.isFallingPlatfrom = True
+        self.isFallingPlatform = isFallingPlatform
         self.platformFall = False
 
     # draw the platform using the camera
-    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, joystick):
+    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick):
         x, y = cam.get(self.rect.x, self.rect.y, WIDTH, HEIGHT)
         WIN.blit(platform_image, (x, y))
         if self.question and not self.hasQuestion:
@@ -50,11 +50,12 @@ class Platform:
                 CorrectSound.play()
                 player.spawnPoint = (self.rect.x+self.rect.width/2-player.size/2, self.toTop-100)
             else:
+                WrongSound.play()
                 removeHeart(player)
             self.quest = False
 
     # move the platform if it's a moving platform
-    def move(self, DeltaTime):
+    def move(self):
         if self.question and not self.hasQuestion:
             self.hasQuestion = True
             quest_equation = eq.equations[0]
@@ -66,7 +67,7 @@ class Platform:
     def update(self):
         if self.platformFall:
             self.timeRemain += 0.3
-        if self.timeRemain >= 75 and not self.question and self.isFallingPlatfrom:
+        if self.timeRemain >= 75 and not self.question and self.isFallingPlatform:
             self.rect.x = self.rect.x + math.cos(self.timeRemain)*3
             if self.timeRemain >= 125:
                 self.isAlive = False
