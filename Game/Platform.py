@@ -11,7 +11,9 @@ platform_image = pygame.image.load("assets/platforms/platform.png")
 platform_image = pygame.transform.scale(platform_image, (200, 40))
 quest_warning_image = pygame.image.load("assets/platforms/questionSymbol.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
-trophy_image = pygame.image.load("assets/platforms/win/trophy.png")
+trophy_image = pygame.image.load("assets/platforms/win/trophySymbol.png")
+trophy_image = pygame.transform.scale(trophy_image, (trophy_image.get_width()/8, trophy_image.get_height()/8))
+
 
 font = pygame.font.Font(None, 100)
 
@@ -28,6 +30,7 @@ class Platform:
         self.correctAnswer = False
         self.quest = None
         self.toTop = self.rect.y - 400
+        self.toTopSpeed = 100
         self.timeRemain = 0
         self.isAlive = True
         self.isFallable = isFallable
@@ -36,11 +39,11 @@ class Platform:
     # draw the platform using the camera
     def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick, platforms):
         x, y = cam.get(self.rect.x, self.rect.y, WIDTH, HEIGHT)
-        WIN.blit(platform_image, (x, y))
         if self.question and not self.hasQuestion:
             WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))
         if self == platforms[-1]:
-            WIN.blit(trophy_image, (x + trophy_image.get_width()/1.5, y - 100))
+            WIN.blit(trophy_image, (x + trophy_image.get_width()/1.5, y - trophy_image.get_height()+5))
+        WIN.blit(platform_image, (x, y))
         
         # draw the quest and update
         if self.quest:
@@ -79,14 +82,14 @@ class Platform:
                 self.timeRemain = 0
                 self.falling = False
         if self.correctAnswer:
-            self.rect.y -= (self.rect.y - self.toTop) / 100
+            self.rect.y -= (self.rect.y - self.toTop) / self.toTopSpeed
 
 # the quest to draw the question and answers
 class Quest:
     def __init__(self, quest, answer, x, y):
         self.quest = quest
         self.answer = int(answer) if answer == int(answer) else answer
-        self.wrongAnswer = answer + (random.choice([-1, 1])*random.randint(2, 20))
+        self.wrongAnswer = int(answer + (random.choice([-1, 1])*random.randint(2, 20)))
         self.x = x
         self.y = y
         self.questMovement = 0

@@ -10,6 +10,7 @@ from LoadingScreen import LoadingScreen
 from MainMenu import MainMenu
 from LevelScreen import LevelScreen
 from Levels import makeLevels
+from saveProgress import load
 
 # initialize pygame
 pygame.init()
@@ -34,7 +35,7 @@ WrongSound.set_volume(0.7)
 # variable to the save the current screen / Mode
 currentMode = "main-menu"
 
-# initialize all the levels
+# init the levels
 makeLevels(WIDTH)
 
 # called everytime a screen is changed to check what is the next screen
@@ -42,8 +43,8 @@ def RunGame():
     global currentMode
     while currentMode != "quit":
         if currentMode == "gameloop":
-            currentMode = GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, Levels.currentLevel)
-        if currentMode == "levelscreen":
+            currentMode, Levels.currentLevel = GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, Levels.currentLevel)
+        elif currentMode == "levelscreen":
             currentMode, Levels.currentLevel = LevelScreen(WIDTH, HEIGHT, WIN, FPS)
         elif currentMode == "loadingScreen":
             thread = threading.Thread(target=eq.getEquations, args=(100,))

@@ -2,8 +2,9 @@
 from Platform import Platform
 from random import randint
 import pygame
+from saveProgress import load, save
 
-maxLevel = 8
+maxLevel = int(load("maxLevel"))
 currentLevel = 1
 
 font = pygame.font.Font(None, 100)
@@ -53,7 +54,7 @@ def makeLevels(WIDTH):
     global levels
     levels = [
         # WIDTH, number, hasFallings, hasQuestions, platformsAmount, Text
-        Level(WIDTH, 1, False, False, 6, ["LEVEL 1", "", "created by", "Shalev", "Tal", "Noam", "", "SPACE - jump  A - left  D - right"]),
+        Level(WIDTH, 1, False, False, 3, ["LEVEL 1", "", "created by", "Shalev", "Tal", "Noam", "", "SPACE - jump  A - left  D - right"]),
         Level(WIDTH, 2, False, True, 15, ["LEVEL 2", "", "Now", "There are", "Questions!", "", "Press E", "to answer"]),
         Level(WIDTH, 3, True, True, 23, ["LEVEL 3", "", "Be carful", "the platforms", "are shaking"]),
         Level(WIDTH, 4, True, True, 26, ["LEVEL 4"]),
@@ -72,8 +73,15 @@ def getLevel():
 def getMaxLevel():
     return maxLevel
 
+def setMaxLevel(toChange):
+    global maxLevel
+    maxLevel = toChange
+
 def getLevelsAmount():
     return len(levels)
+
+def getCurrentLevel():
+    return currentLevel
 
 def getLevelPlatforms():
     return levels[currentLevel-1].platforms
@@ -82,3 +90,4 @@ def levelUp():
     global maxLevel
     if currentLevel == maxLevel:
         maxLevel += 1
+        save("maxLevel", maxLevel)

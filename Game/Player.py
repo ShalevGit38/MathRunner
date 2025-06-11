@@ -137,9 +137,13 @@ class Player:
             platform.isAlive = True
     
     def landOnPlatform(self, platform, cam, platforms):
-        if platform == platforms[-1]:
+        if platform == platforms[-1] and self.play:
             Levels.levelUp()
-            return "levelscreen"
+            self.play = False
+            platform.toTop -= 200
+            platform.toTopSpeed = 50
+            platform.correctAnswer = True
+            cam.followEverywhere = True
         # apply cam shake
         if self.isInAir:
             cam.camShakeTime = 25
@@ -168,9 +172,7 @@ class Player:
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
                     quest = self.landOnPlatform(platform, cam, platforms)
-                    if quest == "levelscreen":
-                        return "levelscreen"
-                    elif quest:
+                    if quest:
                         platform.quest = quest
                 elif self.y_vel < 0:
                     self.y_vel = 0

@@ -1,7 +1,7 @@
 import pygame
 import math
 from Button import Button
-import time
+from Levels import makeLevels
 
 class Circle:
     def __init__(self, x, y):
@@ -45,6 +45,8 @@ def LoadingScreen(thread, WIDTH, HEIGHT, WIN):
     exitButton = Button((10, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
 
     thread.start()
+    
+    makeLevels(WIDTH)
 
     while thread.is_alive():
         WIN.fill((0, 0, 0))
