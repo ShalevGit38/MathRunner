@@ -8,7 +8,6 @@ from LoseScreen import LoseScreen
 from LoadingScreen import LoadingScreen
 from MainMenu import MainMenu
 from LevelScreen import LevelScreen
-from Levels import makeLevels
 
 # initialize pygame
 pygame.init()
@@ -28,9 +27,7 @@ CorrectSound = pygame.mixer.Sound('assets/game_music/correct.mp3')
 
 # variable to the save the current screen / Mode
 currentMode = "main-menu"
-
-# initialize all the levels
-makeLevels(WIDTH)
+currentLevel = 1
 
 # called everytime a screen is changed to check what is the next screen
 def RunGame():

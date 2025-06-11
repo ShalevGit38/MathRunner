@@ -3,7 +3,8 @@ from Player import handle_movement
 from Player import Player
 from Button import Button
 from Camera import Camera
-from Levels import getLevelPlatforms
+from Platform import Platform
+from Platform import addPlatform
 from Cloud import drawClouds, spawnCloud, removeClouds
 
 pygame.joystick.init()
@@ -64,8 +65,12 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, currentLevel):
     player = Player(WIDTH, HEIGHT)
 
     # sets all the platforms
-    platforms = getLevelPlatforms()
-    
+    firstPlatform = Platform((WIDTH-200, 500, 200, 40))
+    firstPlatform.isFallingPlatfrom = False
+    firstPlatform.question = False
+    platforms = [firstPlatform]
+    for i in range(30):
+        addPlatform(platforms, i*700, WIDTH)
     currentQuestionPlatform = None
 
     # set the camera

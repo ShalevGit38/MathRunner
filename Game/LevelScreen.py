@@ -1,14 +1,11 @@
 import pygame
 from Button import Button
-from Levels import maxLevel, getLevelsAmount
 
 levels_image = pygame.image.load("assets/logos/levels.png")
 levels_image = pygame.transform.scale(levels_image, (levels_image.get_width(), levels_image.get_height()))
 
 def drawButtons(buttons, WIN, levelChoose):
     for button in buttons:
-        if int(button.text) > maxLevel:
-            button.currentColor = (100, 100, 100)
         button.draw(WIN)
         if button.text == str(levelChoose):
             pygame.draw.rect(WIN, (255, 255, 0), (button.rect), 5, 10)
@@ -16,12 +13,11 @@ def drawButtons(buttons, WIN, levelChoose):
 def makeButtons(buttons, WIDTH, HEIGHT, levelsRow):
     for y in range(2):
         for x in range(5):
+            size = 100
+            buttonX  = (WIDTH/2 - size*5 + size/2) + x*size*2
+            buttonY = (HEIGHT/2 - size*2 + size*1.5) + y*size*2
             level = (x + y*5 + 1) + (levelsRow-1)*10
-            if level <= getLevelsAmount():
-                size = 100
-                buttonX  = (WIDTH/2 - size*5 + size/2) + x*size*2
-                buttonY = (HEIGHT/2 - size*2 + size*1.5) + y*size*2
-                buttons.append(Button((buttonX, buttonY, size, size), f"{level}", (0, 200, 0), (0, 100, 0), 75))
+            buttons.append(Button((buttonX, buttonY, size, size), f"{level}", (0, 200, 0), (0, 100, 0), 75))
 
 def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     run = True
@@ -34,7 +30,7 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
     makeButtons(buttons, WIDTH, HEIGHT, levelsRow)
     
     exitButton = Button((WIDTH-110, 10, 100, 50), "BACK", (200, 0, 0), (100, 0, 0), 40)
-    playButton = Button((WIDTH/2+150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
+    playButton = Button((WIDTH/2-150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
     
     while run:
         WIN.fill((0, 0, 0))
@@ -67,9 +63,8 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
         WIN.blit(levels_image, (WIDTH/2-levels_image.get_width()/2, 50))
         
         for button in buttons:
-            if int(button.text) <= maxLevel:
-                if button.onClick():
-                    levelChoose = int(button.text)
+            if button.onClick():
+                levelChoose = int(button.text)
             
         if exitButton.onClick():
             return "main-menu", None
