@@ -1,13 +1,13 @@
 import pygame
 from Button import Button
-from Levels import maxLevel, getLevelsAmount
+from Levels import getLevelsAmount, getMaxLevel
 
 levels_image = pygame.image.load("assets/logos/levels.png")
 levels_image = pygame.transform.scale(levels_image, (levels_image.get_width(), levels_image.get_height()))
 
 def drawButtons(buttons, WIN, levelChoose):
     for button in buttons:
-        if int(button.text) > maxLevel:
+        if int(button.text) > getMaxLevel():
             button.currentColor = (100, 100, 100)
         button.draw(WIN)
         if button.text == str(levelChoose):
@@ -66,7 +66,7 @@ def LevelScreen(WIDTH, HEIGHT, WIN, FPS):
         WIN.blit(levels_image, (WIDTH/2-levels_image.get_width()/2, 50))
         
         for button in buttons:
-            if int(button.text) <= maxLevel:
+            if int(button.text) <= getMaxLevel():
                 if button.onClick():
                     levelChoose = int(button.text)
                     

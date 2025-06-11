@@ -1,6 +1,6 @@
 import pygame
-import time
 import math
+import Levels
 
 # load all the heart images
 heart1 = pygame.image.load("assets/hearts/heart3.png")
@@ -136,7 +136,10 @@ class Player:
             platform.timeRemain = 0
             platform.isAlive = True
     
-    def landOnPlatform(self, platform, cam):
+    def landOnPlatform(self, platform, cam, platforms):
+        if platform == platforms[-1]:
+            Levels.levelUp()
+            return "levelscreen"
         # apply cam shake
         if self.isInAir:
             cam.camShakeTime = 25
@@ -164,8 +167,10 @@ class Player:
                     self.jump = 1
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
-                    quest = self.landOnPlatform(platform, cam)
-                    if quest:
+                    quest = self.landOnPlatform(platform, cam, platforms)
+                    if quest == "levelscreen":
+                        return "levelscreen"
+                    elif quest:
                         platform.quest = quest
                 elif self.y_vel < 0:
                     self.y_vel = 0

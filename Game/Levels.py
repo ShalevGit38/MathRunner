@@ -3,7 +3,7 @@ from Platform import Platform
 from random import randint
 import pygame
 
-maxLevel = 3
+maxLevel = 1
 currentLevel = 1
 
 font = pygame.font.Font(None, 100)
@@ -66,8 +66,16 @@ def getLevels():
 def getLevel():
     return levels[currentLevel-1]
 
+def getMaxLevel():
+    return maxLevel
+
 def getLevelsAmount():
     return len(levels)
 
 def getLevelPlatforms():
     return levels[currentLevel-1].platforms
+
+def levelUp():
+    global maxLevel
+    if currentLevel == maxLevel:
+        maxLevel += 1

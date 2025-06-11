@@ -43,11 +43,12 @@ def updatePlayer(player, platforms, cam, WIDTH, HEIGHT, DeltaTime, joystick):
     handle_movement(player, WIDTH, joystick, cam)
     player.addGravity(HEIGHT, cam, DeltaTime, WIDTH, floor_img)
     player.moveAnimation(DeltaTime)
-    player.collidePlatform(platforms, HEIGHT, cam, floor_img)
+    modeChange = player.collidePlatform(platforms, HEIGHT, cam, floor_img)
     if player.play:
         player.move(DeltaTime)
     cam.follow_x = True if player.x > -100 + WIDTH/2 else False
     cam.follow_y = True if player.y > 50 else False
+    return modeChange
 
 # draw the background and loop the floor
 def drawBG(cam, WIDTH, HEIGHT, WIN):
@@ -121,7 +122,10 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, if it is colliding with a quest platform then its set the question as the quest
-        updatePlayer(player, platforms, cam, WIDTH, HEIGHT, DeltaTime, joystick)
+        modeChange = updatePlayer(player, platforms, cam, WIDTH, HEIGHT, DeltaTime, joystick)
+        
+        if modeChange == "levelscreen":
+            return "levelscreen"
 
         # draw and make the exit button work
         exitButton.draw(WIN)
