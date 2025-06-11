@@ -53,8 +53,8 @@ def makeLevels(WIDTH):
     global levels
     levels = [
         Level(WIDTH, 1, False, 10, ["LEVEL 1", "", "created by", "Shalev", "Tal", "Noam"]),
-        Level(WIDTH, 2, True, 12, ["LEVEL 2", "", "Now", "the platforms", "can shake"]),
-        Level(WIDTH, 3, True, 15, ["LEVEL 3"]),
+        Level(WIDTH, 2, False, 12, ["LEVEL 2", "", "Now", "There are", "Questions!"]),
+        Level(WIDTH, 3, True, 15, ["LEVEL 3", "", "Be aware", "the platforms", "are shaking"]),
         Level(WIDTH, 4, True, 17, ["LEVEL 4"]),
         Level(WIDTH, 5, True, 20, ["LEVEL 5"])
     ]
