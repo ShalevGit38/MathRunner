@@ -33,7 +33,7 @@ def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, Cor
     for platform in platforms:
         if platform.isAlive:
             if getDistance(platform.rect.x, platform.rect.y, player.x, player.y) < WIDTH:
-                platform.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick)
+                platform.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick, platforms)
         platform.update()
 
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)

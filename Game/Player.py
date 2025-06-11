@@ -11,8 +11,8 @@ heart3 = pygame.image.load("assets/hearts/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
-skins = ["Man", "Ninja"]
-playerSkin = skins[1]
+skins = ["Man", "Ninja", "Pink", "Dusk"]
+playerSkin = skins[3]
 
 # load animations
 runAnimation = []

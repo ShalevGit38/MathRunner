@@ -11,6 +11,7 @@ platform_image = pygame.image.load("assets/platforms/platform.png")
 platform_image = pygame.transform.scale(platform_image, (200, 40))
 quest_warning_image = pygame.image.load("assets/platforms/questionSymbol.png")
 quest_warning_image = pygame.transform.scale(quest_warning_image, (quest_warning_image.get_width()/4, quest_warning_image.get_height()/4))
+trophy_image = pygame.image.load("assets/platforms/win/trophy.png")
 
 font = pygame.font.Font(None, 100)
 
@@ -33,11 +34,13 @@ class Platform:
         self.falling = False
 
     # draw the platform using the camera
-    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick):
+    def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick, platforms):
         x, y = cam.get(self.rect.x, self.rect.y, WIDTH, HEIGHT)
         WIN.blit(platform_image, (x, y))
         if self.question and not self.hasQuestion:
-            WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))\
+            WIN.blit(quest_warning_image, (x + quest_warning_image.get_width()/1.5, y - 100))
+        if self == platforms[-1]:
+            WIN.blit(trophy_image, (x + trophy_image.get_width()/1.5, y - 100))
         
         # draw the quest and update
         if self.quest:

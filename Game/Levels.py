@@ -3,7 +3,7 @@ from Platform import Platform
 from random import randint
 import pygame
 
-maxLevel = 1
+maxLevel = 8
 currentLevel = 1
 
 font = pygame.font.Font(None, 100)
@@ -19,7 +19,7 @@ class Level:
         self.generateLevel(WIDTH)
     
     def generateLevel(self, WIDTH):
-        firstPlatform = Platform((WIDTH-200, 600, 200, 40), False, False)
+        firstPlatform = Platform((WIDTH-200, 500, 600, 40), False, False)
         self.platforms.append(firstPlatform)
         for i in range(self.length):
             self.addPlatform(i*600, WIDTH)
@@ -53,11 +53,14 @@ def makeLevels(WIDTH):
     global levels
     levels = [
         # WIDTH, number, hasFallings, hasQuestions, platformsAmount, Text
-        Level(WIDTH, 1, False, False, 10, ["LEVEL 1", "", "created by", "Shalev", "Tal", "Noam", "", "SPACE - jump  A - left  D - right"]),
-        Level(WIDTH, 2, False, True, 12, ["LEVEL 2", "", "Now", "There are", "Questions!", "", "Press E", "to answer"]),
-        Level(WIDTH, 3, True, True, 15, ["LEVEL 3", "", "Be carful", "the platforms", "are shaking"]),
-        Level(WIDTH, 4, True, True, 17, ["LEVEL 4"]),
-        Level(WIDTH, 5, True, True, 20, ["LEVEL 5"])
+        Level(WIDTH, 1, False, False, 6, ["LEVEL 1", "", "created by", "Shalev", "Tal", "Noam", "", "SPACE - jump  A - left  D - right"]),
+        Level(WIDTH, 2, False, True, 15, ["LEVEL 2", "", "Now", "There are", "Questions!", "", "Press E", "to answer"]),
+        Level(WIDTH, 3, True, True, 23, ["LEVEL 3", "", "Be carful", "the platforms", "are shaking"]),
+        Level(WIDTH, 4, True, True, 26, ["LEVEL 4"]),
+        Level(WIDTH, 5, True, True, 30, ["LEVEL 5"]),
+        Level(WIDTH, 6 , True , True , 30 , ["LEVEL 6"]),
+        Level(WIDTH, 7 , True , True , 30 , ["LEVEL 7"]),
+        Level(WIDTH, 8 , True , True , 30 , ["LEVEL 8"])
     ]
 
 def getLevels():
