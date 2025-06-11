@@ -39,11 +39,11 @@ def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, Cor
     player.draw(cam, WIN, WIDTH, HEIGHT, DeltaTime)
 
 # update everything that is player functions
-def updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick):
+def updatePlayer(player, platforms, cam, WIDTH, HEIGHT, DeltaTime, joystick):
     handle_movement(player, WIDTH, joystick, cam)
     player.addGravity(HEIGHT, cam, DeltaTime, WIDTH, floor_img)
     player.moveAnimation(DeltaTime)
-    player.collidePlatform(platforms, WIDTH, HEIGHT, cam, DeltaTime, floor_img)
+    player.collidePlatform(platforms, HEIGHT, cam, floor_img)
     if player.play:
         player.move(DeltaTime)
     cam.follow_x = True if player.x > -100 + WIDTH/2 else False
@@ -121,7 +121,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, if it is colliding with a quest platform then its set the question as the quest
-        updatePlayer(player, platforms, cam, quest, WIDTH, HEIGHT, DeltaTime, joystick)
+        updatePlayer(player, platforms, cam, WIDTH, HEIGHT, DeltaTime, joystick)
 
         # draw and make the exit button work
         exitButton.draw(WIN)

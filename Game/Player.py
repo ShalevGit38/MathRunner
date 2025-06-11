@@ -132,11 +132,11 @@ class Player:
     
     def respawnPlatforms(self, platforms):
         for platform in platforms:
-            platform.platformFall = False
+            platform.falling = False
             platform.timeRemain = 0
             platform.isAlive = True
     
-    def landOnPlatform(self, platform, cam, DeltaTime):
+    def landOnPlatform(self, platform, cam):
         # apply cam shake
         if self.isInAir:
             cam.camShakeTime = 25
@@ -145,14 +145,13 @@ class Player:
         self.jump = 1
         self.y_vel = 0
         self.y = platform.rect.y - self.size
-        # change platform
-        platform.platformFall = True
+        platform.falling = True
         quest = platform.move()
         if quest:
             return quest
 
     # check where and if the player is colliding with the platforms
-    def collidePlatform(self, platforms, WIDTH, HEIGHT, cam, DeltaTime, floor_img):
+    def collidePlatform(self, platforms, HEIGHT, cam, floor_img):
         selfRect = pygame.Rect(self.x, self.y, self.size, self.size)
         if self.y > HEIGHT and self.x > floor_img.get_width()-100:
             self.spawn(cam, platforms)
@@ -165,7 +164,7 @@ class Player:
                     self.jump = 1
                     self.x = platform.rect.x-self.size
                 elif self.y_vel >= 0:
-                    quest = self.landOnPlatform(platform, cam, DeltaTime)
+                    quest = self.landOnPlatform(platform, cam)
                     if quest:
                         platform.quest = quest
                 elif self.y_vel < 0:

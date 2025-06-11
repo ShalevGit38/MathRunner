@@ -20,17 +20,17 @@ def addPlatform(platforms, x, WIDTH):
 
 # object of the platform
 class Platform:
-    def __init__(self, rect, isFallingPlatform):
+    def __init__(self, rect, isFallable, isQuestion):
         self.rect = pygame.Rect(rect)
-        self.question = (random.randint(1, 5) <= 2)
+        self.question = (random.randint(1, 5) <= 2 and isQuestion)
         self.hasQuestion = False
         self.correctAnswer = False
         self.quest = None
         self.toTop = self.rect.y - 400
         self.timeRemain = 0
         self.isAlive = True
-        self.isFallingPlatform = isFallingPlatform
-        self.platformFall = False
+        self.isFallable = isFallable
+        self.falling = False
 
     # draw the platform using the camera
     def draw(self, cam, WIN, WIDTH, HEIGHT, DeltaTime, player, CorrectSound, WrongSound, joystick):
@@ -65,16 +65,16 @@ class Platform:
             return quest
     
     def update(self):
-        if self.platformFall:
+        if self.falling:
             self.timeRemain += 0.3
-        if self.timeRemain >= 75 and not self.question and self.isFallingPlatform:
+        if self.timeRemain >= 75 and not self.question and self.isFallable:
             self.rect.x = self.rect.x + math.cos(self.timeRemain)*3
             if self.timeRemain >= 125:
                 self.isAlive = False
             if self.timeRemain >= 300:
                 self.isAlive = True
                 self.timeRemain = 0
-                self.platformFall = False
+                self.falling = False
         if self.correctAnswer:
             self.rect.y -= (self.rect.y - self.toTop) / 100
 
