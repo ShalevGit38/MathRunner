@@ -17,6 +17,7 @@ def MainMenu(WIDTH, HEIGHT, WIN, FPS):
     playButton = Button((WIDTH/2-150, HEIGHT/2+300, 300, 100), "PLAY", (0, 200, 0), (0, 100, 0), 100)
     exitButton = Button((10, 10, 100, 50), "EXIT", (200, 0, 0), (100, 0, 0), 40)
     musicButton = Button((WIDTH/2-75, HEIGHT/2+300-60, 150, 50), "music", (0, 255, 0), (0, 200, 0), 60)
+    skinButton = Button((WIDTH/2-75, HEIGHT/2+400+10, 150, 50), "skins", (0, 200, 0), (0, 100, 0), 60)
 
 
     # main loop in the main menu
@@ -40,6 +41,8 @@ def MainMenu(WIDTH, HEIGHT, WIN, FPS):
             return "levelscreen"
         if exitButton.onClick():
             return "quit"
+        if skinButton.onClick():
+            return "skinscreen"
         if musicButton.onClick():
             music_playing = not music_playing
             if music_playing:
@@ -55,6 +58,7 @@ def MainMenu(WIDTH, HEIGHT, WIN, FPS):
         playButton.draw(WIN)
         exitButton.draw(WIN)
         musicButton.draw(WIN)
+        skinButton.draw(WIN)
 
 
         # show the game name image

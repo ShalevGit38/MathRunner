@@ -10,7 +10,7 @@ from LoadingScreen import LoadingScreen
 from MainMenu import MainMenu
 from LevelScreen import LevelScreen
 from Levels import makeLevels
-from saveProgress import load
+from SkinScreen import SkinScreen
 
 # initialize pygame
 pygame.init()
@@ -25,7 +25,7 @@ font = pygame.font.Font(None, 100)
 
 # load and play music / load sound fx's
 pygame.mixer.music.load('assets/game_music/Pixelated Horizons.mp3')
-pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 CorrectSound = pygame.mixer.Sound('assets/game_music/correct.mp3')
 CorrectSound.set_volume(0.7)
@@ -53,6 +53,8 @@ def RunGame():
             currentMode = MainMenu(WIDTH, HEIGHT, WIN, FPS)
         elif currentMode == "lose-screen":
             currentMode = LoseScreen(WIDTH, HEIGHT, WIN, FPS)
+        elif currentMode == "skinscreen":
+            currentMode = SkinScreen(WIDTH, HEIGHT, WIN)
 
 # start the game if I play this current file
 if __name__ == "__main__":

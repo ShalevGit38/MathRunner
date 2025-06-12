@@ -19,8 +19,8 @@ class Camera:
         if self.follow_y or self.followEverywhere:
             self.y += ((y - self.y) / self.SPEED)*DeltaTime
         if self.camShakeTime > 0:
-            self.x += randint(-2, 2)
-            self.y += randint(-2, 2)
+            self.x += randint(-3, 3)
+            self.y += randint(-3, 3)
             self.camShakeTime -= 1
 
     # returns the position odf the object relative to the camera position

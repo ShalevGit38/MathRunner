@@ -4,6 +4,7 @@ from Player import Player
 from Button import Button
 from Camera import Camera
 from Levels import getLevelPlatforms, getLevel
+from random import randint
 
 pygame.joystick.init()
 
@@ -16,6 +17,10 @@ else:
 
 # load floor
 floor_img = pygame.image.load("assets/floors/floor.png")
+
+# load the jump sound
+jump_sound = pygame.mixer.Sound("assets/game_music/jump.mp3")
+jump_sound.set_volume(0.3)
 
 # returns the distance from one point to another
 def getDistance(x, y, x1, y1):
@@ -96,17 +101,24 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
     exitButton = Button((WIDTH-110, 10, 100, 50), "BACK", (200, 0, 0), (100, 0, 0), 40)
     
     # after win buttons
-    replayButton = Button((WIDTH/2-250-100, HEIGHT/2+100, 220, 100), "REPLAY STAGE", (0, 0, 255), (0, 0, 197), 40)
-    mainMenuButton = Button((WIDTH/2-90, HEIGHT/2+100, 200, 100), "MAIN MENU", (0, 0, 255), (0, 0, 197), 40)
-    nextLevelButton = Button((WIDTH/2+250-100, HEIGHT/2+100, 200, 100), "NEXT LEVEL", (0, 0 , 255), (0, 0, 197), 40)
+    replayButton = Button((WIDTH/2-250-100, HEIGHT/2+100, 220, 100), "REPLAY STAGE", (0, 200, 0), (0, 100, 0), 40)
+    mainMenuButton = Button((WIDTH/2-90, HEIGHT/2+100, 200, 100), "MAIN MENU", (0, 200, 0), (0, 100, 0), 40)
+    nextLevelButton = Button((WIDTH/2+250-100, HEIGHT/2+100, 200, 100), "NEXT LEVEL", (0, 200, 0), (0, 100, 0), 40)
 
     # variable to make the x button on a contoller work only once
     # without the otion to long press it
     longXpress = True
     
+    stars = []
+    for i in range(1000):
+        stars.append((randint(0, WIDTH), randint(0, HEIGHT)))
+    
     while run:
         # fill the screen with the color blue
-        WIN.fill((0, 200, 255))
+        WIN.fill((0, 0, 0))
+        
+        for star in stars:
+            pygame.draw.circle(WIN, (255, 255, 255), star, 1)
 
         # pygame game events
         for event in pygame.event.get():
@@ -117,6 +129,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
             if event.type == pygame.KEYDOWN:
                 # jump when space is pressed
                 if event.key == pygame.K_SPACE and player.jump > 0 and player.play:
+                    jump_sound.play()
                     player.playerJump()
                 # exit the game where the escape is pressed
                 if event.key == pygame.K_ESCAPE:

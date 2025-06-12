@@ -2,6 +2,7 @@ import pygame
 import math
 from Button import Button
 from Levels import makeLevels
+from Player import loadSkin
 
 class Circle:
     def __init__(self, x, y):
@@ -47,6 +48,7 @@ def LoadingScreen(thread, WIDTH, HEIGHT, WIN):
     thread.start()
     
     makeLevels(WIDTH)
+    loadSkin()
 
     while thread.is_alive():
         WIN.fill((0, 0, 0))

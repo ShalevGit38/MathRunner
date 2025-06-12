@@ -3,6 +3,7 @@ import random
 from Player import removeHeart
 import math
 import createProblem as eq
+from saveProgress import load, save
 
 pygame.init()
 
@@ -55,6 +56,7 @@ class Platform:
                 self.correctAnswer = True
                 CorrectSound.play()
                 player.spawnPoint = (self.rect.x+self.rect.width/2-player.size/2, self.toTop-100)
+                save("questionsAnswered", int(load("questionsAnswered"))+1)
             else:
                 WrongSound.play()
                 removeHeart(player)
@@ -72,7 +74,7 @@ class Platform:
     
     def update(self):
         if self.falling:
-            self.timeRemain += 0.3
+            self.timeRemain += 0.4
         if self.timeRemain >= 75 and not self.question and self.isFallable:
             self.rect.x = self.rect.x + math.cos(self.timeRemain)*3
             if self.timeRemain >= 125:
@@ -107,24 +109,25 @@ class Quest:
     # draw the choose one with a line
     def drawChoose(self, x, y, WIN):
         self.chooseX -= (self.chooseX - 400*self.choose) / 10
-        pygame.draw.line(WIN, (255, 255, 0), ((x-200)+(self.chooseX)-100, y+50), ((x-200)+(self.chooseX)+100, y+50), 10)
+        pygame.draw.rect(WIN, (255, 255, 0), ((x-200)+(self.chooseX)-100, y+50, 200, 20), 10, 10)
+        pygame.draw.rect(WIN, (255, 255, 0), ((x-200)+(self.chooseX)-100, y+47, 200, 10), 10)
 
     # draw the answer
     def drawQuest(self, x, y, WIN, DeltaTime):
         self.questMovement += 170*DeltaTime
-        text_s = font.render(self.quest, 1, (0, 0, 0))
+        text_s = font.render(self.quest, 1, (255, 255, 255))
         text_r = text_s.get_rect()
         text_r.center = (x, y - 100)
         WIN.blit(text_s, text_r)
 
     # draw the quest
     def drawAnswer(self, x, y, WIN):
-        text_s = font.render(f"{(self.wrongAnswer if not self.correctIndex else self.answer)}", 1, (0, 0, 0))
+        text_s = font.render(f"{(self.wrongAnswer if not self.correctIndex else self.answer)}", 1, (255, 255, 255))
         text_r = text_s.get_rect()
         text_r.center = (x+200, y)
         WIN.blit(text_s, text_r)
 
-        text_s = font.render(f"{(self.wrongAnswer if self.correctIndex else self.answer)}", 1, (0, 0, 0))
+        text_s = font.render(f"{(self.wrongAnswer if self.correctIndex else self.answer)}", 1, (255, 255, 255))
         text_r = text_s.get_rect()
         text_r.center = (x-200, y)
         WIN.blit(text_s, text_r)

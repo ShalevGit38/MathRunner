@@ -1,5 +1,8 @@
 import pygame
 
+click_sound = pygame.mixer.Sound("assets/game_music/click.mp3")
+click_sound.set_volume(0.4)
+
 # class to make it easier to make a new button
 class Button:
     def __init__(self, rect, text, color, toColor, size):
@@ -33,6 +36,7 @@ class Button:
             self.currentColor = self.toColor
             if mp and not self.clicked:
                 self.clicked = True
+                click_sound.play()
                 return True
             if not mp:
                 self.clicked = False

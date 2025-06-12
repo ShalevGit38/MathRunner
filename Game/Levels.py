@@ -20,7 +20,7 @@ class Level:
         self.generateLevel(WIDTH)
     
     def generateLevel(self, WIDTH):
-        firstPlatform = Platform((WIDTH-200, 500, 600, 40), False, False)
+        firstPlatform = Platform((WIDTH-200, 500, 200, 40), False, False)
         self.platforms.append(firstPlatform)
         for i in range(self.length):
             self.addPlatform(i*600, WIDTH)

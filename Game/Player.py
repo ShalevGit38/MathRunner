@@ -1,6 +1,9 @@
 import pygame
 import math
 import Levels
+from saveProgress import load
+
+pygame.init()
 
 # load all the heart images
 heart1 = pygame.image.load("assets/hearts/heart3.png")
@@ -11,27 +14,41 @@ heart3 = pygame.image.load("assets/hearts/heart.png")
 heart3 = pygame.transform.scale(heart3, (heart3.get_width()*1.5, heart3.get_height()*1.5))
 hearts = [heart1, heart2, heart3]
 
-skins = ["Man", "Ninja", "Pink", "Dusk"]
-playerSkin = skins[3]
+skins = ["Ninja", "Astro", "Pink", "Dusk"]
+
+runAnimation = []
+idleAnimation = []
+fallAnimation = None
+jumpAnimation = None
+
+# load the sound fx's
+winSound = pygame.mixer.Sound("assets/game_music/win.mp3")
+winSound.set_volume(0.3)
+land_sound = pygame.mixer.Sound("assets/game_music/land.mp3")
+land_sound.set_volume(1)
 
 # load animations
-runAnimation = []
-for i in range(12):
-    image = pygame.image.load(f"assets/skins/{playerSkin}/Run/tile{i}.png")
-    runAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
+def loadSkin():
+    global runAnimation, idleAnimation, fallAnimation, jumpAnimation
+    playerSkin = load("skin")
+    
+    runAnimation = []
+    for i in range(12):
+        image = pygame.image.load(f"assets/skins/{playerSkin}/Run/tile{i}.png")
+        runAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
-idleAnimation = []
-for i in range(11):
-    image = pygame.image.load(f"assets/skins/{playerSkin}/Idle/tile{i}.png")
-    idleAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
+    idleAnimation = []
+    for i in range(11):
+        image = pygame.image.load(f"assets/skins/{playerSkin}/Idle/tile{i}.png")
+        idleAnimation.append(pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2)))
 
-image = pygame.image.load(f"assets/skins/{playerSkin}/fall.png")
-fallAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
+    image = pygame.image.load(f"assets/skins/{playerSkin}/fall.png")
+    fallAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
 
-image = pygame.image.load(f"assets/skins/{playerSkin}/jump.png")
-jumpAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
-
-
+    image = pygame.image.load(f"assets/skins/{playerSkin}/jump.png")
+    jumpAnimation = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
+    
+    
 # remove heart when getting damage
 def removeHeart(player):
     for heart in reversed(player.life):
@@ -140,6 +157,7 @@ class Player:
         if platform == platforms[-1] and self.play:
             Levels.levelUp()
             self.play = False
+            winSound.play()
             platform.toTop -= 200
             platform.toTopSpeed = 50
             platform.correctAnswer = True
@@ -147,6 +165,9 @@ class Player:
         # apply cam shake
         if self.isInAir:
             cam.camShakeTime = 25
+            # land sound fx
+            land_sound.play()
+            
         # change player
         self.isInAir = False
         self.jump = 1
@@ -193,6 +214,7 @@ class Player:
             self.jump = 1
             if self.isInAir:
                 cam.camShakeTime = 25
+                land_sound.play()
             self.isInAir = False
     
     def playerJump(self):

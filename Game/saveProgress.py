@@ -2,8 +2,10 @@
 def load(var):
     with open("gameSave.txt", 'r') as file:
         for line in file.readlines():
-            if line.split("=")[0].replace(" ", "") == var:
-                return line.split("=")[-1]
+            lineVar = line.split("=")[0].replace(" ", "")
+            lineValue = line.split("=")[-1].replace("\n", "")
+            if lineVar == var:
+                return lineValue
 
 def save(var, value):
     with open("gameSave.txt", 'r') as file:
