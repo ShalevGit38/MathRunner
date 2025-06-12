@@ -4,7 +4,6 @@ from Player import Player
 from Button import Button
 from Camera import Camera
 from Levels import getLevelPlatforms, getLevel
-from Cloud import drawClouds, spawnCloud, removeClouds
 
 pygame.joystick.init()
 
@@ -23,8 +22,7 @@ def getDistance(x, y, x1, y1):
     return ((x - x1)**2 + (y - y1)**2) ** 0.5
 
 # draw everything in the gameloop that need to be drawn
-def drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj):
-    drawClouds(clouds, WIN, WIDTH, HEIGHT, cam)
+def drawFrame(player, platforms, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj):
 
     levelObj.writeText(WIN, cam, WIDTH, HEIGHT)
     
@@ -106,8 +104,6 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
     # without the otion to long press it
     longXpress = True
     
-    clouds = []
-    
     while run:
         # fill the screen with the color blue
         WIN.fill((0, 200, 255))
@@ -134,7 +130,7 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
                 longXpress = False
 
         # draws everything to the screen
-        drawFrame(player, platforms, clouds, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj)
+        drawFrame(player, platforms, cam, WIDTH, HEIGHT, WIN, DeltaTime, CorrectSound, WrongSound, joystick, levelObj)
         # move the camera towards the player position
         cam.update(player.x, player.y, DeltaTime)
         # try and update the player, if it is colliding with a quest platform then its set the question as the quest
@@ -158,11 +154,6 @@ def GameLoop(WIDTH, HEIGHT, WIN, FPS, CorrectSound, WrongSound, currentLevel):
             nextAction = afterWinFunc(WIN, replayButton, mainMenuButton, nextLevelButton, currentLevel)
             if nextAction:
                 return nextAction
-        
-        # spawn clouds on the screen
-        spawnCloud(clouds, cam, WIDTH)
-        # remove louds from the screen if too much to the left
-        removeClouds(clouds, cam, WIDTH)
 
         # update the screen
         clock.tick(FPS)
